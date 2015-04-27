@@ -13,3 +13,9 @@
  *= require_tree .
  *= require_self
  */
+@import url(http://fonts.googleapis.com/css?family=Roboto+Slab&subset=latin,cyrillic);
+
+body {
+  background: image_url('diamonds.png');
+  font-family: 'Roboto Slab', serif;
+}
