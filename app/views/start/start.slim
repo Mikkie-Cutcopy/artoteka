@@ -1,2 +1,16 @@
 div.header
-  | i'm gonna be mad app 
+  p.roboto_header
+    | Имаджинариум
+
+div.welcome-popup
+
+
+div.popup-container
+  div.popup-content
+    p.roboto33
+      | Войти в комнату
+    input.inpt
+    p.roboto33
+      | или
+    = button_to 'Создать комнату', root_path, method: :get, remote: :true, class: 'btn'
+

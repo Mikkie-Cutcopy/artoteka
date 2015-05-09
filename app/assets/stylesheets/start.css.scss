@@ -1,11 +1,26 @@
 // Place all the styles related to the start controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+@import "borders";
 
 .header {
-  font-size: 72px;
-  width: 700px;
+  font-size: 38px;
+  width: 500px;
   margin: auto;
   background-color: #ef596e;
+}
 
+.popup-container {
+  @extend .soft_border;
+  background-color: #ececec;
+  width: 500px;
+  height: 500px;
+  margin: auto;
+  margin-top: 50px;
+  padding-top: 30px;
+}
+
+.popup-content {
+  width: 350px;
+  margin: auto;
 }

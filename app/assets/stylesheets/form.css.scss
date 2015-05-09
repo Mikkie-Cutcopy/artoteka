@@ -1,0 +1,32 @@
+@import 'variables';
+@import 'borders';
+
+.form_element {
+  @extend .soft_border;
+  font-family: $font-stack;
+  color: #6b6b6b;
+  font-size: 33px;
+  text-decoration: none;
+  padding: 21px 30px 21px 30px;
+}
+
+.btn {
+  @extend .form_element;
+  background: #ededed;
+}
+
+.inpt {
+  @extend .form_element;
+  width: 288px;
+}
+
+.btn:hover {
+  background: #f6f005;
+  text-decoration: none;
+  -webkit-box-shadow: 2px 2px 20px 7px rgba(255,221,0,0.88);
+  -moz-box-shadow: 2px 2px 20px 7px rgba(255,221,0,0.88);
+  box-shadow: 2px 2px 20px 7px rgba(255, 244, 0, 0.88);
+  color: #fffaf1;
+  border: solid #fffaf1 2px;
+  cursor: pointer;
+}

@@ -1,0 +1,18 @@
+@import 'variables';
+
+.roboto_font {
+  font-family: $font-stack;
+}
+
+p.roboto_header {
+  @extend .roboto_font;
+  text-align: center;
+  font-size: 48px;
+}
+
+p.roboto33 {
+  @extend .roboto_font;
+  text-align: center;
+  font-size: 33px;
+  color: #6b6b6b;
+}
