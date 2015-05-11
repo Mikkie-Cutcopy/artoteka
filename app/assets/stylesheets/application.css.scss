@@ -11,6 +11,7 @@
  * file per style scope.
  *
  *= require_self
+ *= require jquery-ui
  *= require_tree .
  */
 
@@ -19,6 +20,10 @@
 body {
   background: image_url('diamonds.png');
   font-family: $font-stack
+}
+
+.hidden {
+  display: none;
 }
 
 

@@ -4,13 +4,30 @@ div.header
 
 div.welcome-popup
 
-
 div.popup-container
-  div.popup-content
+
+div.container.sign_up_popup.hidden
+  div.popup-content.sign_up_popup
+    div style='height: 10px'
+    p.roboto33
+      | Укажите имя
+    input.inpt
+    p.roboto33
+      | почта
+    input.inpt
+    div style='height: 40px'
+    = button_to 'Создать комнату', root_path, method: :get, remote: :true, class: 'btn create_room2'
+
+div.container.start_popup.hidden
+  div.popup-content.start_popup
+    div style='height: 20px'
     p.roboto33
       | Войти в комнату
     input.inpt
+    div style='height: 20px'
+    = button_to 'Вход', root_path, method: :get, class: 'btn'
     p.roboto33
       | или
-    = button_to 'Создать комнату', root_path, method: :get, remote: :true, class: 'btn'
+    button.btn.create_room href='javascript:void(0);'
+      |  Создать комнату
 
