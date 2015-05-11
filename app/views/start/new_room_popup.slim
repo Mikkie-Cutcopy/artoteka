@@ -1,0 +1,11 @@
+div.container.sign_up_popup.hidden
+  div.popup-content.sign_up_popup
+    div style='height: 10px'
+    p.roboto33
+      | Укажите имя
+    input.inpt
+    p.roboto33
+      | почта
+    input.inpt
+    div style='height: 40px'
+    = button_to 'Создать комнату', root_path, method: :get, remote: :true, class: 'btn create_room2'

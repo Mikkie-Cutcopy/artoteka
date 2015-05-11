@@ -3,10 +3,17 @@
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
 $(document).ready ->
-  start_popup = $('.container.start_popup').html()
-  $('div.popup-container').append(start_popup)
+  #stateObj = { foo: "bar" }
+  #history.pushState(stateObj, "page 1", "")
+
 
 $(document).on 'click', '.create_room', ->
-  sign_up = $('.container.sign_up_popup').html()
-  $('div.popup-container > div.popup-content').remove()
-  $('div.popup-container').append(sign_up)
+  qwest.get('/new_room')
+    .then (response) ->
+      eval(response)
+
+#$(document).on 'click', '.create_room2', ->
+#  qwest.post('/rooms')
+#  .then (response) ->
+#    console.log(response)
+#    eval(response)
