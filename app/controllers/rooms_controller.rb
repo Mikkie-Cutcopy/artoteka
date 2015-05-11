@@ -1,10 +1,16 @@
 class RoomsController < ApplicationController
 
+
+  def new
+    respond_to do |format|
+      format.js   {render 'rooms/new'}
+    end
+  end
+
   def create
     @room = Room.create(owner: params[:owner], owner_email: params[:owner_email])
     respond_to do |format|
-      format.js   {}
-      format.json {render :create}
+      format.js   {render 'rooms/show'}
     end
 
   end

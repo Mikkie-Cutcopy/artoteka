@@ -4,7 +4,7 @@ Rails.application.routes.draw do
 
   # You can have the root of your site routed with "root"
   root 'start#start'
-  get 'new_room' => 'start#new_room'
+
 
   resources :rooms
   # Example of regular route:

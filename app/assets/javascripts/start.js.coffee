@@ -7,10 +7,10 @@ $(document).ready ->
   #history.pushState(stateObj, "page 1", "")
 
 
-#$(document).on 'click', '.create_room', ->
-#  qwest.get('/new_room')
-#    .then (response) ->
-#      eval(response)
+$(document).on 'click', 'div.header', ->
+  #qwest.get('/')
+  #  .then (response) ->
+  #    eval(response)
 
 #$(document).on 'click', '.create_room2', ->
 #  qwest.post('/rooms')
