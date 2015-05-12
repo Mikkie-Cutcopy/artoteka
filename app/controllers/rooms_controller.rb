@@ -1,6 +1,5 @@
 class RoomsController < ApplicationController
 
-
   def new
     respond_to do |format|
       format.js   {render 'rooms/new'}
@@ -8,20 +7,21 @@ class RoomsController < ApplicationController
   end
 
   def create
-    @room = Room.create(owner: params[:owner], owner_email: params[:owner_email])
+    @player = Player.create(name: params[:owner], email: params[:owner_email])
+    Room.create(owner_id: @player.id)
     respond_to do |format|
       format.js   {render 'rooms/show'}
     end
-
   end
 
   private
-  # Using a private method to encapsulate the permissible parameters is
-  # just a good pattern since you'll be able to reuse the same permit
-  # list between create and update. Also, you can specialize this method
-  # with per-user checking of permissible attributes.
+
   def room_params
     params.require(:room).permit(:owner, :owner_email)
+  end
+
+  def player_params
+    params.require(:player).permit(:name, :email)
   end
 
 end

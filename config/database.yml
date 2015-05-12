@@ -10,12 +10,12 @@ default: &default
 
 development:
   <<: *default
-  database: imaginarium
+  database: imaginarium_db
 
 production:
   <<: *default
-  database: imaginarium
+  database: imaginarium_db
 
 test:
   <<: *default
-  database: imaginarium
+  database: imaginarium_db
