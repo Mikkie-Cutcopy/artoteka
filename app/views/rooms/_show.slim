@@ -1,7 +1,12 @@
 div.popup-content.start_popup
-  div style='height: 20px'
-  div.form_element
-    p.roboto20
-      = @player.name
-    p.roboto20
-      = @player.email
+  div.space20
+    p.roboto33
+      = @room.number
+  div.space20
+  - @room.players.each do |p|
+    div.space20
+    div.form_element
+      p.roboto20
+        = p.name
+      p.roboto20
+        = p.email

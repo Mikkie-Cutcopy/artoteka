@@ -8,6 +8,7 @@ Rails.application.routes.draw do
 
   resources :rooms
   get 'message' => 'message#message'
+  get 'define_room' => 'rooms#show'
   # Example of regular route:
   #   get 'products/:\id' => 'catalog#view'
 

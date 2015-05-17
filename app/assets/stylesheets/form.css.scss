@@ -7,7 +7,7 @@
   color: #6b6b6b;
   font-size: 33px;
   text-decoration: none;
-  padding: 21px 30px 21px 30px;
+  padding: 0px 30px 0px 30px;
 }
 
 .btn {
@@ -37,4 +37,8 @@
   -webkit-box-shadow: 2px 2px 20px 7px rgba(255,221,0,0.88);
   -moz-box-shadow: 2px 2px 20px 7px rgba(255,221,0,0.88);
   box-shadow: 2px 2px 20px 7px rgba(255, 244, 0, 0.88);
+}
+
+.space20 {
+  height: 20px;
 }

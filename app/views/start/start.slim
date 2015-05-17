@@ -1,14 +1,14 @@
-div.popup-container
-  div.popup-content.start_popup
-    div style='height: 20px'
+div.popup-content.start_popup
+  div style='height: 20px'
+  = form_tag define_room_path, method: :get, remote: :true
     p.roboto33
       | Войти в комнату
-    input.inpt
+    input.inpt name='number'
     div style='height: 20px'
-    = button_to 'Вход', root_path, method: :get, class: 'btn'
-    p.roboto33
-      | или
-    = button_to 'Создать комнату', new_room_path, method: :get, remote: :true, class: 'btn create_room'
+    = button_to 'Вход', define_room_path, method: :get, class: 'btn'
+  p.roboto33
+    | или
+  = button_to 'Создать комнату', new_room_path, method: :get, remote: :true, class: 'btn create_room'
 
 
 
