@@ -10,6 +10,8 @@ class RoomsController < ApplicationController
 
   def create
     @room = Room.activate(params[:owner], params[:owner_email])
+    cookies.signed.permanent[:imaginarium_name] = params[:owner]
+    cookies.signed.permanent[:imaginarium_email] = params[:owner_email]
     respond_to do |format|
       format.js   {render 'rooms/show'}
     end
