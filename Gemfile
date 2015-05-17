@@ -33,6 +33,7 @@ gem 'slim'
 gem 'puma'
 gem 'tubesock'
 gem 'randexp'
+gem 'redis'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 

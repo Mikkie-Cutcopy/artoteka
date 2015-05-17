@@ -17,6 +17,6 @@ class Room < ActiveRecord::Base
   private
 
   def self.number_gen(n)
-    pluck(:number).include?(n) ? number_gen(n) : n
+    (pluck(:number).include?(n) && n.to_s.length.eql?(4)) ? number_gen(n) : n
   end
 end
