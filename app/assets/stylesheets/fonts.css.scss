@@ -10,10 +10,20 @@ p.roboto_header {
   font-size: 48px;
 }
 
-p.roboto33 {
+p.roboto_body {
   @extend .roboto_font;
   text-align: center;
+  color: #6b6b6b;
+}
+
+p.roboto33 {
+  @extend .roboto_body;
   font-size: 33px;
   margin: 10px;
-  color: #6b6b6b;
+}
+
+p.roboto20 {
+  @extend .roboto_body;
+  font-size: 20px;
+  margin: 10px;
 }

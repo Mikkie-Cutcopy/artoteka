@@ -30,7 +30,8 @@ gem 'spring',        group: :development
 gem 'pg'
 gem 'slim'
 
-
+gem 'puma'
+gem 'tubesock'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'

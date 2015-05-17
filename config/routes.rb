@@ -7,6 +7,7 @@ Rails.application.routes.draw do
 
 
   resources :rooms
+  get 'message' => 'message#message'
   # Example of regular route:
   #   get 'products/:\id' => 'catalog#view'
 
