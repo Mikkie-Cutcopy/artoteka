@@ -1,6 +1,6 @@
 require 'redis'
 require 'json'
-require  'redis_connection'
+require 'message_adapter'
 
 
 class MessageController < ApplicationController
@@ -10,17 +10,13 @@ class MessageController < ApplicationController
     hijack do |tubesock|
 
       tubesock.onopen do
-         RedisConnection.redis_onopen(tubesock)
-        #tubesock.send_data "Hello, friend"
-      end
-
-      tubesock.onopen do
-        tubesock.send_data "Hello, friend"
+        tubesock.send_data("hello from server")
+        #@message_adapter = MessageAdapter.start(tubesock)
       end
 
       tubesock.onmessage do |data|
-        $redis.publish 'rubyonrails', data.to_json
-        tubesock.send_data "You said: #{data}"
+        #@message_adapter.send_to_channel(data)
+        tubesock.send_data(data)
       end
 
     end

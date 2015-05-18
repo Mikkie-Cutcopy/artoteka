@@ -49,4 +49,4 @@ function waitForSocketConnection(socket, callback){
         }, 5); // wait 5 milisecond for the connection...
 }
 
-sendMessage("Hello");
+sendMessage("Hello world");
