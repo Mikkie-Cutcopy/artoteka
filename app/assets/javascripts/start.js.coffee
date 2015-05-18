@@ -2,12 +2,12 @@
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
-$(document).ready ->
+#$(document).ready ->
   #stateObj = { foo: "bar" }
   #history.pushState(stateObj, "page 1", "")
 
 
-$(document).on 'click', 'div.header', ->
+#$(document).on 'click', 'div.header', ->
   #qwest.get('/')
   #  .then (response) ->
   #    eval(response)
