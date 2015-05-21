@@ -15,9 +15,10 @@ class MessageAdapter
     @socket = socket
     @redis = Redis.new(:timeout => 0)
 
-    @redis.subscribe('rubyonrails') do |on|
+    @redis.subscribe('rubyoddnrails') do |on|
       on.message do |channel, msg|
         #data = JSON.parse(msg)
+        puts 'im in redis'
         @socket.send_data "##{channel} -  #{msg}"
       end
     end
