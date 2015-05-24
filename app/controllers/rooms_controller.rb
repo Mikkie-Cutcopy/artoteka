@@ -9,9 +9,10 @@ class RoomsController < ApplicationController
   end
 
   def create
+    # create room and room owner
     @room = Room.activate(params[:owner], params[:owner_email])
-    cookies.signed.permanent[:imaginarium_name] = params[:owner]
-    cookies.signed.permanent[:imaginarium_email] = params[:owner_email]
+    MessageAdapter.subscribe_to_channel(@room.number.to_s)
+    set_cookies(imaginarium_name: params[:owner], imaginarium_email: params[:owner_email] )
 
     respond_to do |format|
       format.js   {render 'rooms/show'}

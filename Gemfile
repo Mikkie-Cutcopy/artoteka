@@ -36,6 +36,7 @@ gem 'randexp'
 gem 'redis'
 gem "hiredis"
 gem 'pry'
+gem 'rubocop'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
