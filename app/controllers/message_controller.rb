@@ -8,26 +8,14 @@ class MessageController < ApplicationController
 
   def message
     hijack do |tubesock|
-
+      #on connect with server
       tubesock.onopen do
-        tubesock.send_data('hello everybody')
-        #@message_adapter = MessageAdapter.start(tubesock)
-        @redis = Redis.new(url: ENV["REDIS_URL"], driver: :hiredis)
-
-         Thread.new do
-          @redis.subscribe('rubyoddnrails') do |on|
-            on.message do |channel, msg|
-              #data = JSON.parse(msg)
-              puts 'im in redis'
-              tubesock.send_data "##{channel} -  #{msg}"
-            end
-          end
-         end
+        MessageAdapter.start(tubesock)
       end
 
+      #on message by user
       tubesock.onmessage do |data|
-        @redis = Redis.new(url: ENV["REDIS_URL"], driver: :hiredis)
-        @redis.publish('rubyoddnrails', data)
+        MessageAdapter.send_to_channel(data)
       end
 
     end

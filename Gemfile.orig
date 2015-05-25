@@ -36,8 +36,11 @@ gem 'randexp'
 gem 'redis'
 gem "hiredis"
 gem 'pry'
+<<<<<<< HEAD
 gem 'useragent'
+=======
 gem 'rubocop'
+>>>>>>> a761dbb4e0bdec4eaf60942cb5655926209df87e
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 

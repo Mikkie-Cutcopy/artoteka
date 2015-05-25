@@ -2,26 +2,31 @@ require 'rubygems'
 require 'redis'
 require 'json'
 
+module MessageAdapter
+  module_function
 
-class MessageAdapter
+  attr_reader :channel
 
-  attr_writer :channel
-
-  def self.start(socket)
-    new(socket)
+  def start(socket)
+    @socket = socket
+    @channel ||= 'broadcast'
+    # @redis = Redis.new(:timeout => 0)
+    @redis_sub, @redis_pub = [nil, nil].map do
+        Redis.new(url: ENV["REDIS_URL"], driver: :hiredis)
+    end
   end
 
-  def initialize(socket)
-    @socket = socket
-    @redis = Redis.new(:timeout => 0)
-
-    @redis.subscribe('rubyoddnrails') do |on|
-      on.message do |channel, msg|
-        #data = JSON.parse(msg)
-        puts 'im in redis'
-        @socket.send_data "##{channel} -  #{msg}"
-      end
+  def subscribe_to_channel(channel)
+    @channel = channel
+    @redis_listener = Thread.new do
+                        @redis_sub.subscribe(@channel) do |on|
+                          on.message do |redis_channel, msg|
+                            send_to_user "##{redis_channel} -  #{msg}"
+                          end
+                        end
     end
+
+    send_to_user("you have been subscribed to #{@channel}")
   end
 
   def send_to_user(data)
@@ -29,6 +34,6 @@ class MessageAdapter
   end
 
   def send_to_channel(data)
-    @redis.publish 'rubyonrails', data.to_json
+    @redis_pub.publish @channel, data
   end
 end
