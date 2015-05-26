@@ -37,6 +37,7 @@ gem 'redis'
 gem "hiredis"
 gem 'pry'
 gem 'rubocop'
+gem 'state_machine'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 

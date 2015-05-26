@@ -10,8 +10,7 @@ module MessageAdapter
   def start(socket)
     @socket = socket
     @channel ||= 'broadcast'
-    # @redis = Redis.new(:timeout => 0)
-    @redis_sub, @redis_pub = [nil, nil].map do
+    @redis_sub, @redis_pub = Array.new(2).map do
         Redis.new(url: ENV["REDIS_URL"], driver: :hiredis)
     end
   end
