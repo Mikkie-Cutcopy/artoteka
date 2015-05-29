@@ -1,8 +1,11 @@
+require 'imaginarium_game'
+
 class RoomsController < ApplicationController
 
   protect_from_forgery except: :show
 
   def new
+    #@testclass = GetTestclass.generate.inspect
     respond_to do |format|
       format.js   {render 'rooms/new'}
     end

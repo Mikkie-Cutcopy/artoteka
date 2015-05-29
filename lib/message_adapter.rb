@@ -22,7 +22,7 @@ module MessageAdapter
                           on.message do |redis_channel, msg|
                             send_to_user "##{redis_channel} -  #{msg}"
                           end
-                        end
+                      end
     end
 
     send_to_user("you have been subscribed to #{@channel}")
