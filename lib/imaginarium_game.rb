@@ -3,26 +3,22 @@ module ImaginariumGame
   class Player
 
     COLORS = [:black, :white, :green, :blue, :red, :pink, :orange]
-    STATUSES = [:getting_card, :waiting, :getting_number]
+    STATUSES = [:getting_key_card, :getting_card, :waiting, :getting_number]
 
-    attr_reader :owner, :status, :color
+    attr_reader :owner, :color, :current_iteration
+    attr_accessor :status, :points
 
     def initialize(user, i, current_iteration)
       @owner, @color, @current_iteration = user, COLORS[i], current_iteration
     end
 
-    def get_card(phrase, number)
-
-    end
-
-    def get_number(number)
-
+    def action(action_name, number, phrase)
+      @current_iteration.action(self, action_name, number, phrase)
     end
 
   end
 
   class Match
-
 
     def self.start!(room, users)
       self.new(room, users)
@@ -44,6 +40,14 @@ module ImaginariumGame
   end
 
   class GameIteration
+
+    def initialize
+
+    end
+
+    def action(player, action_name, *params)
+
+    end
 
   end
 
