@@ -63,7 +63,7 @@ module ImaginariumGame
     end
 
     def key_player(action)
-      @players_cycle ||= @players.rotate!(/\d{1}/.gen)
+      @players_cycle ||= @players.rotate!(/\d{1}/.gen.to_i)
       case action
         when nil
           @players_cycle.first
@@ -83,7 +83,7 @@ module ImaginariumGame
     #after :action, :try_to_end_iteration
 
     def initialize(match)
-      @current_match = match, @status = :active, @next_after = {:get_key_card => :get_card, :get_card => :get_number, :get_number => nil}, @phrase = nil
+      @current_match = match; @status = :active; @next_after = {:get_key_card => :get_card, :get_card => :get_number, :get_number => nil}; @phrase = nil
       @players_choice, @players_results = {}, {}
       @current_match.players.each do |p|
         @players_choice.merge!(p => {:get_key_card => nil, :get_card => nil, :get_number => nil})
