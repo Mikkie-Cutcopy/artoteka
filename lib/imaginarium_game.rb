@@ -3,50 +3,60 @@ module ImaginariumGame
   class Player
 
     COLORS = [:black, :white, :green, :blue, :red, :pink, :orange]
-    STATUSES = [:getting_key_card, :getting_card, :waiting, :getting_number]
 
-    attr_reader :owner, :color, :current_iteration
-    attr_accessor :status, :points
+
+    attr_reader :owner, :color, :current_iteration, :id
+    attr_accessor :listen_action, :key_player, :points
 
     def initialize(user, i, current_iteration)
-      @owner, @color, @current_iteration = user, COLORS[i], current_iteration
+      @owner, @id, @color, @current_iteration, @listen_action, @key_player = user, i, COLORS[i], current_iteration, nil, false
     end
 
-    def action(action_name, number, phrase)
-      @current_iteration.action(self, action_name, number, phrase)
+    def action(action_name, hash_params = {})
+      @current_iteration.action(self, action_name, hash_params)
     end
-
   end
 
   class Match
 
+    attr_reader :players, :room
+
     def self.start!(room, users)
       self.new(room, users)
-
     end
 
     def initialize(room, users)
       @room = room
-      @current_iteration = GameIteration.new
       @players = users.each_with_index.map do |user, i|
         Player.new(user, i, @current_iteration)
       end
-    end
 
-    def update_player_statuses
-
+      @current_iteration = GameIteration.new(self)
     end
 
   end
 
   class GameIteration
 
-    def initialize
-
+    def initialize(match)
+      @current_match = match
+      @current_actions_cycle = [:get_key_card, :get_card, :get_number]
+      #players[0].status = :getting_key_card
     end
 
-    def action(player, action_name, *params)
+    def action(player, action, hash_params)
+      if action.eql?(player.listen_action) # nil case
+         player.listen_action = nil
+         next_step?(player, action)
+      end
+    end
 
+    private
+
+    def next_step?(player, action)
+      if @current_match.players.map(&:listen_action).all?{|la| la.eql?(nil)}
+
+      end
     end
 
   end
