@@ -4,7 +4,6 @@ module ImaginariumGame
 
     COLORS = [:black, :white, :green, :blue, :red, :pink, :orange]
 
-
     attr_reader :owner, :color, :current_iteration, :id
     attr_accessor :listen_action, :key_player, :points
 
@@ -26,48 +25,69 @@ module ImaginariumGame
     end
 
     def initialize(room, users)
-      @room = room
+      @room = room, @history = nil
       @players = users.each_with_index.map do |user, i|
         Player.new(user, i, @current_iteration)
       end
+      run_iteration
+    end
 
-      @current_iteration = GameIteration.new(self)
+    def end_iteration
+      if @current_iteration
+        @history << @current_iteration
+        @current_iteration = nil
+      end
+    end
+
+    private
+
+    def run_iteration
+      unless @current_iteration
+        key_player :set_next
+        @current_iteration = GameIteration.new(self)
+      end
+    end
+
+    def key_player(action)
+      @players_cycle ||= @players.rotate!(/\d{1}/.gen)
+      case action
+        when nil
+          @players_cycle.first
+        when :set_next
+          @players_cycle.rotate!.first
+      end
     end
 
   end
 
   class GameIteration
 
+    attr_reader :status
+
     def initialize(match)
-      @current_match = match
-      @current_actions_cycle = [:get_key_card, :get_card, :get_number]
+      @current_match = match, @status = :active,  @next_after = {:get_key_card => :get_card, :get_card => :get_number, :get_number => nil}
       #players[0].status = :getting_key_card
     end
 
     def action(player, action, hash_params)
       if action.eql?(player.listen_action) # nil case
          player.listen_action = nil
-         next_step?(player, action)
+         next_step?(action)
       end
     end
 
     private
 
-    def next_step?(player, action)
-      if @current_match.players.map(&:listen_action).all?{|la| la.eql?(nil)}
-
+    def next_step?(current_action)
+      if @current_match.players.map(&:listen_action).all?{|a| a.eql?(nil)}
+        @current_match.players.each do |player|
+          player.listen_action = @next_after[current_action] unless player.eql?(@current_match.key_player)
+        end
+        @current_match.end_iteration if current_action.eql?(:get_number)
       end
     end
 
-  end
-
-  class Queue
-
-    def initialize(players)
-      @uc = users_count
-    end
-
-    def current_map
+    def iteration_summary
 
     end
 
