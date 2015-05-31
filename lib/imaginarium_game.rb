@@ -95,15 +95,39 @@ module ImaginariumGame
       end
     end
 
+    #@players_choice.merge!(p => {:get_key_card => nil, :get_card => nil, :get_number => nil})
+    #@players_results.merge!(p => {:guess_key_card => nil, :guess_own_card => nil, :score => nil})
+
     def try_to_end_iteration
       if @players_choice.all?{|player, choice| choice[:get_key_card] || (choice[:get_card] && choice[:get_number])}
-        @players_choice.each do |player, choice|
-          player_result = @players_results[player]
-
-          
-
-        end
+        scoring
         self.status = :closed
+      end
+    end
+
+    def scoring
+      card_choices = @players_choice.map{|p, c| c[:get_card]}
+
+      @players_choice.each do |player, choice|
+        score = 0
+        if choice[:get_key_card]
+          all_guess = card_choices.compact.all?{|v| v.eql?(key_card)}
+          nobody_guess = !(card_choices.compact.any?{|v| v.eql?(key_card)})
+
+          if all_guess
+            score -= 3
+          elsif nobody_guess
+            score -= 2
+          else
+            score +3
+            score += card_choices.count(choice[:get_card])
+          end
+
+        else
+          (score += 3) if choice[:get_card].eql?(key_card)
+          score += card_choices.count(choice[:get_card])
+        end
+        @players_results[player][:score] = score
       end
     end
 
