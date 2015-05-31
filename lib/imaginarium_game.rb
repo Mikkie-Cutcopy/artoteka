@@ -5,37 +5,51 @@ module ImaginariumGame
     COLORS = [:black, :white, :green, :blue, :red, :pink, :orange]
 
     attr_reader :owner, :color, :current_iteration, :id
-    attr_accessor :listen_action, :key_player, :points
+    attr_accessor :listen_action, :key_player, :score
 
     def initialize(user, i, current_iteration)
-      @owner, @id, @color, @current_iteration, @listen_action, @key_player = user, i, COLORS[i], current_iteration, nil, false
+      @owner, @color, @current_iteration, @listen_action, @key_player = user, COLORS[i], current_iteration, nil, false
     end
 
     def action(action_name, hash_params = {})
-      @current_iteration.action(self, action_name, hash_params)
+       @current_iteration.action(self, action_name, hash_params) if @current_iteration
     end
   end
 
   class Match
 
-    attr_reader :players, :room
+    attr_reader :players, :room, :current_iteration
 
     def self.start!(room, users)
       self.new(room, users)
     end
 
     def initialize(room, users)
-      @room = room, @history = nil
-      @players = users.each_with_index.map do |user, i|
-        Player.new(user, i, @current_iteration)
+      if (4..7).include?(users.try(:count)) && room.is_a?(Fixnum)
+        @room = room, @history = nil
+        @players = users.each_with_index.map do |user, i|
+          Player.new(user, i, @current_iteration)
+        end
+        manage_iteration
+      else
+        raise ArgumentError
       end
+    end
+
+    def manage_iteration
       run_iteration
     end
 
     def end_iteration
-      if @current_iteration
+      if @current_iteration && @current_iteration.status.eql?(:closed)
+
+        @current_iteration.players_results.each do |player, result|
+          player.score += result[:score]
+        end
+
         @history << @current_iteration
         @current_iteration = nil
+        manage_iteration
       end
     end
 
@@ -62,15 +76,15 @@ module ImaginariumGame
 
   class GameIteration
 
-    include Aspectory::Hook
+    #include Aspectory::Hook
 
     attr_reader :status, :phrase, :players_results
 
-    after :action, :try_to_end_iteration
+    #after :action, :try_to_end_iteration
 
     def initialize(match)
       @current_match = match, @status = :active, @next_after = {:get_key_card => :get_card, :get_card => :get_number, :get_number => nil}, @phrase = nil
-      @players_choice = {}
+      @players_choice, @players_results = {}, {}
       @current_match.players.each do |p|
         @players_choice.merge!(p => {:get_key_card => nil, :get_card => nil, :get_number => nil})
         @players_results.merge!(p => {:guess_key_card => nil, :guess_own_card => nil, :score => nil})
@@ -82,6 +96,7 @@ module ImaginariumGame
          player.listen_action = nil
          @players_choice[player][action], @phrase = hash_params[:card_number], hash_params[:phrase]
          refresh_listen_actions(action)
+         try_to_end_iteration
       end
     end
 
@@ -95,39 +110,47 @@ module ImaginariumGame
       end
     end
 
-    #@players_choice.merge!(p => {:get_key_card => nil, :get_card => nil, :get_number => nil})
-    #@players_results.merge!(p => {:guess_key_card => nil, :guess_own_card => nil, :score => nil})
-
     def try_to_end_iteration
       if @players_choice.all?{|player, choice| choice[:get_key_card] || (choice[:get_card] && choice[:get_number])}
         scoring
         self.status = :closed
+        @current_match.end_iteration
       end
     end
 
     def scoring
       card_choices = @players_choice.map{|p, c| c[:get_card]}
-
+      player_result = @players_results[player]
       @players_choice.each do |player, choice|
+
         score = 0
-        if choice[:get_key_card]
+        if choice[:get_key_card] # for key player
           all_guess = card_choices.compact.all?{|v| v.eql?(key_card)}
           nobody_guess = !(card_choices.compact.any?{|v| v.eql?(key_card)})
+          guess_key_card_count = card_choices.count(choice[:get_key_card])
 
           if all_guess
             score -= 3
           elsif nobody_guess
             score -= 2
           else
-            score +3
-            score += card_choices.count(choice[:get_card])
+            score += 3
+            score += guess_key_card_count
           end
 
-        else
-          (score += 3) if choice[:get_card].eql?(key_card)
-          score += card_choices.count(choice[:get_card])
+          player_result[:guess_own_card] = guess_key_card_count
+
+        else # for other players
+          # score for guess key card
+          if choice[:get_card].eql?(key_card)
+            (score += 3)
+            player_result[:guess_key_card] = true
+          end
+          # add scores for guess own card
+          guess_own_card_count = card_choices.count(choice[:get_card])
+          score += guess_own_card_count;  player_result[:guess_own_card] = guess_own_card_count
         end
-        @players_results[player][:score] = score
+        player_result[:score] = score
       end
     end
 
@@ -136,7 +159,7 @@ module ImaginariumGame
     end
 
     def iteration_summary
-
+      {:players_choise => @players_choice, :players_results => @players_results}
     end
 
   end
