@@ -34,11 +34,12 @@ gem 'puma'
 gem 'tubesock'
 gem 'randexp'
 gem 'redis'
-gem "hiredis"
+gem 'hiredis'
 gem 'pry'
 gem 'rubocop'
 gem 'state_machine'
 gem 'rspec'
+gem 'aspectory'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 

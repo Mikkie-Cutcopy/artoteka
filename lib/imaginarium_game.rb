@@ -62,29 +62,53 @@ module ImaginariumGame
 
   class GameIteration
 
-    attr_reader :status
+    include Aspectory::Hook
+
+    attr_reader :status, :phrase, :players_results
+
+    after :action, :try_to_end_iteration
 
     def initialize(match)
-      @current_match = match, @status = :active,  @next_after = {:get_key_card => :get_card, :get_card => :get_number, :get_number => nil}
-      #players[0].status = :getting_key_card
+      @current_match = match, @status = :active, @next_after = {:get_key_card => :get_card, :get_card => :get_number, :get_number => nil}, @phrase = nil
+      @players_choice = {}
+      @current_match.players.each do |p|
+        @players_choice.merge!(p => {:get_key_card => nil, :get_card => nil, :get_number => nil})
+        @players_results.merge!(p => {:guess_key_card => nil, :guess_own_card => nil, :score => nil})
+      end
     end
 
     def action(player, action, hash_params)
       if action.eql?(player.listen_action) # nil case
          player.listen_action = nil
-         next_step?(action)
+         @players_choice[player][action], @phrase = hash_params[:card_number], hash_params[:phrase]
+         refresh_listen_actions(action)
       end
     end
 
     private
 
-    def next_step?(current_action)
+    def refresh_listen_actions(current_action)
       if @current_match.players.map(&:listen_action).all?{|a| a.eql?(nil)}
         @current_match.players.each do |player|
           player.listen_action = @next_after[current_action] unless player.eql?(@current_match.key_player)
         end
-        @current_match.end_iteration if current_action.eql?(:get_number)
       end
+    end
+
+    def try_to_end_iteration
+      if @players_choice.all?{|player, choice| choice[:get_key_card] || (choice[:get_card] && choice[:get_number])}
+        @players_choice.each do |player, choice|
+          player_result = @players_results[player]
+
+          
+
+        end
+        self.status = :closed
+      end
+    end
+
+    def key_card
+      @players_choice[@current_match.key_player][:get_key_card]
     end
 
     def iteration_summary
