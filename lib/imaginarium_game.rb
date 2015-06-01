@@ -25,7 +25,7 @@ module ImaginariumGame
     end
 
     def initialize(room, users)
-      if (4..7).include?(users.try(:count)) && room.is_a?(Fixnum)
+      if (4..7).include?(users.try(:count)) && room.is_a?(Fixnum) && !(@@active_rooms.include?(room))
         @room = room; @history = nil; @current_iteration = nil
         @players = users.each_with_index.map do |user, i|
           Player.new(user, i, @current_iteration)
@@ -37,7 +37,7 @@ module ImaginariumGame
     end
 
     def manage_iteration
-      run_iteration
+      run_iteration #FIXME
     end
 
     def end_iteration
@@ -49,6 +49,7 @@ module ImaginariumGame
 
         @history << @current_iteration
         @current_iteration = nil
+        #FIXME out of @@active_rooms and clear memory
         manage_iteration
       end
     end
@@ -59,6 +60,7 @@ module ImaginariumGame
       unless @current_iteration
         key_player :set_next
         @current_iteration = GameIteration.new(self)
+        @@active_rooms ||= []; @@active_rooms << @room
       end
     end
 
