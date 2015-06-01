@@ -4,7 +4,7 @@ module ImaginariumGame
 
     COLORS = [:black, :white, :green, :blue, :red, :pink, :orange]
 
-    attr_reader :owner, :color, :current_iteration, :id
+    attr_reader :owner, :color, :current_iteration
     attr_accessor :listen_action, :key_player, :score
 
     def initialize(user, i, current_iteration)
@@ -26,7 +26,7 @@ module ImaginariumGame
 
     def initialize(room, users)
       if (4..7).include?(users.try(:count)) && room.is_a?(Fixnum)
-        @room = room, @history = nil
+        @room = room; @history = nil; @current_iteration = nil
         @players = users.each_with_index.map do |user, i|
           Player.new(user, i, @current_iteration)
         end
