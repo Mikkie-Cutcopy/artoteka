@@ -4,19 +4,17 @@ require 'rails_helper'
 
 RSpec.describe ImaginariumGame do
 
-  before(:example) do
-
-    @player1, @player2, @player3, @player4, @player5 = Array.new(5).each_with_index.map do |val, index|
+  before(:context) do
+    @users = Array.new(5).each_with_index.map do |val, index|
       Player.create(name: "player#{index}", email: "player#{index}@mail.com")
     end
-
-    @players = [@player1, @player2, @player3, @player4, @player5]
-
+    @match = ImaginariumGame::Match.start!(11111, @users)
+    @players = @match.players
   end
 
   it 'start the game' do
-    @match = ImaginariumGame::Match.start!(11111, @players)
     expect(@match.class).to eq(ImaginariumGame::Match)
+    expect(@match.listen_actions).to eq('hello')
   end
 
 end
