@@ -4,20 +4,31 @@ module ImaginariumGame
 
     COLORS = [:black, :white, :green, :blue, :red, :pink, :orange]
 
-    attr_reader :owner, :color, :current_iteration
+    attr_reader :owner, :color
     attr_accessor :listen_action, :key_player, :score
 
-    def initialize(user, i, current_iteration)
-      @owner, @color, @current_iteration, @listen_action, @key_player = user, COLORS[i], current_iteration, nil, false
+    def initialize(user, current_match)
+
+      @owner, @color, @current_match, @listen_action, @key_player = user, nil, current_match, nil, false
+
+      #set_color
+
     end
 
     def action(action_name, hash_params = {})
-       @current_iteration.action(self, action_name, hash_params) if @current_iteration
+       @current_match.current_iteration.action(self, action_name, hash_params) if @current_match.current_iteration
     end
 
     def name
       @owner.name
     end
+
+    private
+
+   # def set_color
+   #   @@players_count ||= {}
+   #   @@players_count[@current_match.room]
+   # end
   end
 
   class Match
@@ -33,7 +44,7 @@ module ImaginariumGame
       if (4..7).include?(users.try(:count)) && room.is_a?(Fixnum) && !(@@active_rooms.include?(room))
         @room = room; @history = nil; @current_iteration = nil
         @players = users.each_with_index.map do |user, i|
-          Player.new(user, i, @current_iteration)
+          Player.new(user, self)
         end
         manage_iteration
       else
