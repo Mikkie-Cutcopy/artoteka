@@ -1,8 +1,11 @@
+require 'imaginarium_game'
+
 class RoomsController < ApplicationController
 
   protect_from_forgery except: :show
 
   def new
+    #@testclass = GetTestclass.generate.inspect
     respond_to do |format|
       format.js   {render 'rooms/new'}
     end
@@ -12,6 +15,7 @@ class RoomsController < ApplicationController
     # create room and room owner
     @room = Room.activate(params[:owner], params[:owner_email])
     MessageAdapter.subscribe_to_channel(@room.number.to_s)
+
     set_cookies(imaginarium_name: params[:owner], imaginarium_email: params[:owner_email] )
 
     respond_to do |format|
