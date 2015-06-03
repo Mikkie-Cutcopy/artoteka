@@ -4,16 +4,31 @@ module ImaginariumGame
 
     COLORS = [:black, :white, :green, :blue, :red, :pink, :orange]
 
-    attr_reader :owner, :color, :current_iteration
+    attr_reader :owner, :color
     attr_accessor :listen_action, :key_player, :score
 
-    def initialize(user, i, current_iteration)
-      @owner, @color, @current_iteration, @listen_action, @key_player = user, COLORS[i], current_iteration, nil, false
+    def initialize(user, current_match)
+
+      @owner, @color, @current_match, @listen_action, @key_player = user, nil, current_match, nil, false
+
+      #set_color
+
     end
 
     def action(action_name, hash_params = {})
-       @current_iteration.action(self, action_name, hash_params) if @current_iteration
+       @current_match.current_iteration.action(self, action_name, hash_params) if @current_match.current_iteration
     end
+
+    def name
+      @owner.name
+    end
+
+    private
+
+   # def set_color
+   #   @@players_count ||= {}
+   #   @@players_count[@current_match.room]
+   # end
   end
 
   class Match
@@ -21,6 +36,7 @@ module ImaginariumGame
     attr_reader :players, :room, :current_iteration
 
     def self.start!(room, users)
+      @@active_rooms ||= []
       self.new(room, users)
     end
 
@@ -28,7 +44,7 @@ module ImaginariumGame
       if (4..7).include?(users.try(:count)) && room.is_a?(Fixnum) && !(@@active_rooms.include?(room))
         @room = room; @history = nil; @current_iteration = nil
         @players = users.each_with_index.map do |user, i|
-          Player.new(user, i, @current_iteration)
+          Player.new(user, self)
         end
         manage_iteration
       else
@@ -54,23 +70,31 @@ module ImaginariumGame
       end
     end
 
-    private
-
-    def run_iteration
-      unless @current_iteration
-        key_player :set_next
-        @current_iteration = GameIteration.new(self)
-        @@active_rooms ||= []; @@active_rooms << @room
+    def listen_actions
+      response = {}
+      @players.each do |p|
+        response.merge!(p.name => p.listen_action)
       end
+      response
     end
 
-    def key_player(action)
+    def key_player(action=nil)
       @players_cycle ||= @players.rotate!(/\d{1}/.gen.to_i)
       case action
         when nil
           @players_cycle.first
         when :set_next
           @players_cycle.rotate!.first
+      end
+    end
+
+    private
+
+    def run_iteration
+      unless @current_iteration
+        key_player :set_next
+        @current_iteration = GameIteration.new(self)
+        @@active_rooms << @room
       end
     end
 
@@ -91,10 +115,11 @@ module ImaginariumGame
         @players_choice.merge!(p => {:get_key_card => nil, :get_card => nil, :get_number => nil})
         @players_results.merge!(p => {:guess_key_card => nil, :guess_own_card => nil, :score => nil})
       end
+      @current_match.key_player.listen_action = :get_key_card
     end
 
     def action(player, action, hash_params)
-      if action.eql?(player.listen_action) # nil case
+      if action.eql?(player.listen_action) && player.listen_action.present?
          player.listen_action = nil
          @players_choice[player][action], @phrase = hash_params[:card_number], hash_params[:phrase]
          refresh_listen_actions(action)
