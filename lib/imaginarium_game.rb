@@ -8,7 +8,6 @@ module ImaginariumGame
     attr_accessor :listen_action, :key_player, :score
 
     def initialize(user, current_match)
-
       @owner, @color, @current_match, @listen_action, @key_player = user, nil, current_match, nil, false
 
       #set_color
@@ -81,10 +80,10 @@ module ImaginariumGame
     def key_player(action=nil)
       @players_cycle ||= @players.rotate!(/\d{1}/.gen.to_i)
       case action
-        when nil
-          @players_cycle.first
-        when :set_next
-          @players_cycle.rotate!.first
+      when nil
+        @players_cycle.first
+      when :set_next
+        @players_cycle.rotate!.first
       end
     end
 
@@ -104,7 +103,7 @@ module ImaginariumGame
 
     #include Aspectory::Hook
 
-    attr_reader :status, :phrase, :players_results
+    attr_reader :status, :phrase, :players_choice, :players_results
 
     #after :action, :try_to_end_iteration
 

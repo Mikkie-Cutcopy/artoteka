@@ -10,7 +10,7 @@ RSpec.describe ImaginariumGame do
       Player.create(name: "player#{index}", email: "player#{index}@mail.com")
     end
     @match = ImaginariumGame::Match.start!(11111, @users)
-    @players = @match.players
+    @player = @match.players
   end
 
   it 'start settings' do
@@ -22,6 +22,7 @@ RSpec.describe ImaginariumGame do
     expect(@match.listen_actions.values.count(nil)).to eq(@players_count - 1)
   end
 
+  #@players_choice.merge!(p => {:get_key_card => nil, :get_card => nil, :get_number => nil})
   it 'get key card action' do
     expect(@match.key_player.listen_action).to eq(:get_key_card)
 
@@ -30,6 +31,39 @@ RSpec.describe ImaginariumGame do
     expect(@match.key_player.listen_action).to eq(nil)
     expect(@match.listen_actions.values.count(nil)).to eq(1)
     expect(@match.listen_actions.values.count(:get_card)).to eq(@players_count - 1)
+
+    @players_count.times do |n|
+      if @player[n].eql?(@match.key_player)
+        expect(@match.current_iteration.players_choice[@player[n]][:get_key_card]).to eq(17)
+      else
+        expect(@match.current_iteration.players_choice[@player[n]][:get_key_card]).to eq(nil)
+      end
+      expect(@match.current_iteration.players_choice[@player[n]][:get_card]).to eq(nil)
+      expect(@match.current_iteration.players_choice[@player[n]][:get_number]).to eq(nil)
+    end
+
   end
+
+  it 'get card actions' do
+    @players_count.times do |n|
+      @player[n].action :get_card, card_number: (17 + n)
+    end
+
+    expect(@match.key_player.listen_action).to eq(nil)
+    expect(@match.listen_actions.values.count(nil)).to eq(1)
+    expect(@match.listen_actions.values.count(:get_number)).to eq(@players_count - 1)
+
+    @players_count.times do |n|
+      if @player[n].eql?(@match.key_player)
+        expect(@match.current_iteration.players_choice[@player[n]][:get_key_card]).to eq(17)
+      else
+        expect(@match.current_iteration.players_choice[@player[n]][:get_key_card]).to eq(nil)
+        expect(@match.current_iteration.players_choice[@player[n]][:get_card]).not_to eq(nil)
+      end
+      expect(@match.current_iteration.players_choice[@player[n]][:get_number]).to eq(nil)
+    end
+  end
+
+  
 
 end
