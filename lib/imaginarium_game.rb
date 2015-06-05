@@ -8,8 +8,7 @@ module ImaginariumGame
     attr_accessor :listen_action, :key_player, :score
 
     def initialize(user, current_match)
-
-      @owner, @color, @current_match, @listen_action, @key_player = user, nil, current_match, nil, false
+      @owner, @color, @current_match, @listen_action, @key_player, @score = user, nil, current_match, nil, false, 0
 
       #set_color
 
@@ -42,11 +41,12 @@ module ImaginariumGame
 
     def initialize(room, users)
       if (4..7).include?(users.try(:count)) && room.is_a?(Fixnum) && !(@@active_rooms.include?(room))
-        @room = room; @history = nil; @current_iteration = nil
+        @room = room; @history = []; @current_iteration = nil
         @players = users.each_with_index.map do |user, i|
           Player.new(user, self)
         end
         manage_iteration
+        @@active_rooms << @room
       else
         raise ArgumentError
       end
@@ -81,10 +81,10 @@ module ImaginariumGame
     def key_player(action=nil)
       @players_cycle ||= @players.rotate!(/\d{1}/.gen.to_i)
       case action
-        when nil
-          @players_cycle.first
-        when :set_next
-          @players_cycle.rotate!.first
+      when nil
+        @players_cycle.first
+      when :set_next
+        @players_cycle.rotate!.first
       end
     end
 
@@ -94,7 +94,7 @@ module ImaginariumGame
       unless @current_iteration
         key_player :set_next
         @current_iteration = GameIteration.new(self)
-        @@active_rooms << @room
+        #@@active_rooms << @room
       end
     end
 
@@ -104,8 +104,8 @@ module ImaginariumGame
 
     #include Aspectory::Hook
 
-    attr_reader :status, :phrase, :players_results
-
+    attr_reader  :phrase, :players_choice, :players_results
+    attr_accessor :status
     #after :action, :try_to_end_iteration
 
     def initialize(match)
@@ -119,6 +119,7 @@ module ImaginariumGame
     end
 
     def action(player, action, hash_params)
+      #:get_card != :get_number
       if action.eql?(player.listen_action) && player.listen_action.present?
          player.listen_action = nil
          @players_choice[player][action], @phrase = hash_params[:card_number], hash_params[:phrase]
@@ -147,9 +148,8 @@ module ImaginariumGame
 
     def scoring
       card_choices = @players_choice.map{|p, c| c[:get_card]}
-      player_result = @players_results[player]
       @players_choice.each do |player, choice|
-
+        player_result = @players_results[player]
         score = 0
         if choice[:get_key_card] # for key player
           all_guess = card_choices.compact.all?{|v| v.eql?(key_card)}
