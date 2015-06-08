@@ -34,8 +34,9 @@ module ImaginariumGame
 
     attr_reader :players, :room, :current_iteration
 
+    @@active_rooms ||= []
+
     def self.start!(room, users)
-      @@active_rooms ||= []
       self.new(room, users)
     end
 

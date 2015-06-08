@@ -13,6 +13,7 @@ RSpec.describe ImaginariumGame do
     @player = @match.players
   end
 
+
   it 'start settings' do
     expect(@match.class).to eq(ImaginariumGame::Match)
   end
