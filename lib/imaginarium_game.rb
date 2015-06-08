@@ -34,7 +34,7 @@ module ImaginariumGame
 
     attr_reader :players, :room, :current_iteration
 
-    @@active_rooms ||= []
+    @@active_rooms = []
 
     def self.start!(room, users)
       self.new(room, users)
@@ -46,6 +46,9 @@ module ImaginariumGame
         @players = users.each_with_index.map do |user, i|
           Player.new(user, self)
         end
+
+        @deck_of_cards = DeckOfCards.create!(@players.count)
+
         manage_iteration
         @@active_rooms << @room
       else
@@ -190,6 +193,25 @@ module ImaginariumGame
       {:players_choise => @players_choice, :players_results => @players_results}
     end
 
+  end
+
+  class DeckOfCards
+
+    CARDS_COUNT = {4 => 96, 5 => 75, 6 => 72, 7 => 98}
+
+    def self.create!(players_count)
+      new(players_count)
+    end
+
+    def initialize(players_count)
+
+    end
+
+  end
+
+  class Card
+    attr_reader :number, :file_path
+    attr_accessor :status, :owner
   end
 
 end
