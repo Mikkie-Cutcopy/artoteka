@@ -79,8 +79,18 @@ module Chain
       @current_link.content
     end
 
+    def set_to!(n)
+      if n.is_a?(Fixnum)
+        @current_link = @chain.rotate(n).first
+        @current_link.content
+        self
+      end
+    end
+
     def [](n)
-      @chain[n].content
+      if n.is_a?(Fixnum)
+        @chain.rotate(n).first.content
+      end
     end
 
     def +(chain)

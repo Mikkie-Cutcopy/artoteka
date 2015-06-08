@@ -94,6 +94,7 @@ RSpec.describe ImaginariumGame do
       expect(@match.current_iteration.players_choice[@player[n]][:get_number]).to eq(nil)
     end
 
+    puts " "
     @players_count.times do |n|
       puts "player#{n} got: " + @player[n].score.to_s
     end
