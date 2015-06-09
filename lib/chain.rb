@@ -14,6 +14,7 @@ module Chain
         link
       end
         hash_options[:circle].eql?(true) ? self.circle = true : self.circle = false
+        self.set_to!(hash_options[:set_to]) if hash_options[:set_to]
       @current_link = @chain.first
     end
 
@@ -83,7 +84,7 @@ module Chain
       if n.is_a?(Fixnum)
         @current_link = @chain.rotate(n).first
         @current_link.content
-        self
+
       end
     end
 

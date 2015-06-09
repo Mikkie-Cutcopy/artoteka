@@ -9,9 +9,6 @@ module ImaginariumGame
 
     def initialize(user, current_match)
       @owner, @color, @current_match, @listen_action, @key_player, @score = user, nil, current_match, nil, false, 0
-
-      #set_color
-
     end
 
     def action(action_name, hash_params = {})
@@ -24,10 +21,6 @@ module ImaginariumGame
 
     private
 
-   # def set_color
-   #   @@players_count ||= {}
-   #   @@players_count[@current_match.room]
-   # end
   end
 
   class Match
@@ -36,16 +29,18 @@ module ImaginariumGame
 
     @@active_rooms = []
 
-    def self.start!(room, users)
-      self.new(room, users)
+    def self.start!(room, users, first=nil)
+      self.new(room, users, first)
     end
 
-    def initialize(room, users)
+    def initialize(room, users, first=nil)
       if (4..7).include?(users.try(:count)) && room.is_a?(Fixnum) && !(@@active_rooms.include?(room))
         @room = room; @history = []; @current_iteration = nil
         @players = users.each_with_index.map do |user, i|
           Player.new(user, self)
         end
+
+        @first_key_player =  (first && first.is_a?(Fixnum) && @players[first]) ? first : (/\d{1}/.gen.to_i)
 
         @deck_of_cards = DeckOfCards.create!(@players.count)
 
@@ -83,8 +78,7 @@ module ImaginariumGame
     end
 
     def key_player(action=nil)
-      @players_cycle ||= Chain::ChainObject.new(@players, cycle: :true).set_to!(/\d{1}/.gen.to_i)
-
+      @players_cycle ||= Chain::ChainObject.new(@players, cycle: :true, set_to: @first_key_player)
       case action
       when nil
         @players_cycle.current
