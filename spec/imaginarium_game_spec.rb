@@ -102,11 +102,11 @@ RSpec.describe ImaginariumGame do
   describe 'scoring' do
 
     before(:context) do
-      @players_count = 5
+      @players_count = 6
       @users = Array.new(@players_count).each_with_index.map do |val, index|
         Player.create(name: "player#{index}", email: "player#{index}@mail.com")
       end
-      @match = ImaginariumGame::Match.start!(22222, @users, first: 0)
+      @match = ImaginariumGame::Match.start!(22222, @users, first: 3)
       @player = @match.players
     end
 
@@ -116,15 +116,20 @@ RSpec.describe ImaginariumGame do
 
     @match.key_player.action :get_key_card, card_number: 10, phrase: 'Mysterious adventure'
 
-    @player[0].action :get_card, card_number: (10)
-    @player[1].action :get_card, card_number: (11)
-    @player[2].action :get_card, card_number: (12)
-    @player[3].action :get_card, card_number: (13)
-    @player[4].action :get_card, card_number: (14)
+    @player[1].action :get_card, card_number:   11
+    @player[2].action :get_card, card_number:   12
+    @player[3].action :get_card, card_number:   13
+    @player[4].action :get_card, card_number:   14
+
+    @player[1].action :get_number, card_number: 10
+    @player[2].action :get_number, card_number: 10
+    @player[3].action :get_number, card_number: 12
+    @player[4].action :get_number, card_number: 12
 
     puts " "
     @players_count.times do |n|
       puts "player#{n} got: " + @player[n].score.to_s
+      puts "#{n}!" if @player[n] == @match.key_player
     end
     end
   end

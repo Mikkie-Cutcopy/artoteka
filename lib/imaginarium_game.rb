@@ -83,7 +83,7 @@ module ImaginariumGame
       when nil
         @players_cycle.current
       when :set_next
-        @players_cycle.next!
+        @history.empty? ? @players_cycle.current : @players_cycle.next!
       end
     end
 

@@ -14,8 +14,8 @@ module Chain
         link
       end
         hash_options[:circle].eql?(true) ? self.circle = true : self.circle = false
-        self.set_to!(hash_options[:set_to]) if hash_options[:set_to]
-      @current_link = @chain.first
+       self.set_to!(hash_options[:set_to]) if hash_options[:set_to]
+       @current_link ||= @chain.first
     end
 
     def circle=(bool)
