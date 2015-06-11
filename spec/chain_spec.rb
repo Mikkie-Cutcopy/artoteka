@@ -79,4 +79,24 @@ RSpec.describe Chain do
 
   end
 
+  describe 'with set_to' do
+
+    it 'current link' do
+      @chain = Chain::ChainObject.new([1, 'hello', :wounderful], circle: true, set_to: 2)
+      expect(@chain.current).to eq(:wounderful)
+      expect(@chain.next!).to eq(1)
+    end
+
+    it 'current link set_to 3' do
+      @chain = Chain::ChainObject.new([1, 'hello', :wounderful], circle: true, set_to: 3)
+      expect(@chain.current).to eq(1)
+      expect(@chain.next!).to eq('hello')
+    end
+
+    it 'current link set_to 3' do
+      @chain = Chain::ChainObject.new([1, 'hello', :wounderful], set_to: 4)
+      expect(@chain.current).to eq('hello')
+    end
+  end
+
 end

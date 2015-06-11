@@ -78,7 +78,7 @@ module ImaginariumGame
     end
 
     def key_player(action=nil)
-      @players_cycle ||= Chain::ChainObject.new(@players, cycle: :true, set_to: @first_key_player)
+      @players_cycle ||= Chain::ChainObject.new(@players, cycle: :true, set_to: 3)
       case action
       when nil
         @players_cycle.current
