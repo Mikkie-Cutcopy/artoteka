@@ -84,7 +84,6 @@ module Chain
       if n.is_a?(Fixnum)
         @current_link = @chain.rotate(n).first
         @current_link.content
-
       end
     end
 

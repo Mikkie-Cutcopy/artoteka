@@ -87,6 +87,11 @@ RSpec.describe Chain do
       expect(@chain.next!).to eq(1)
     end
 
+    it 'current link set_to 0' do
+      @chain = Chain::ChainObject.new([1, 'hello', :wounderful], circle: true, set_to: 0)
+      expect(@chain.current).to eq(1)
+    end
+
     it 'current link set_to 3' do
       @chain = Chain::ChainObject.new([1, 'hello', :wounderful], circle: true, set_to: 3)
       expect(@chain.current).to eq(1)

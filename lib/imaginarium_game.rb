@@ -4,11 +4,11 @@ module ImaginariumGame
 
     COLORS = [:black, :white, :green, :blue, :red, :pink, :orange]
 
-    attr_reader :owner, :color
+    attr_reader :owner, :color, :id
     attr_accessor :listen_action, :key_player, :score
 
-    def initialize(user, current_match)
-      @owner, @color, @current_match, @listen_action, @key_player, @score = user, nil, current_match, nil, false, 0
+    def initialize(user, current_match, id)
+      @owner, @color, @current_match, @listen_action, @key_player, @score, @id = user, nil, current_match, nil, false, 0, id
     end
 
     def action(action_name, hash_params = {})
@@ -25,7 +25,7 @@ module ImaginariumGame
 
   class Match
 
-    attr_reader :players, :room, :current_iteration
+    attr_reader :players, :room, :current_iteration, :history
 
     @@active_rooms = []
 
@@ -37,10 +37,11 @@ module ImaginariumGame
       if (4..7).include?(users.try(:count)) && room.is_a?(Fixnum) && !(@@active_rooms.include?(room))
         @room = room; @history = []; @current_iteration = nil
         @players = users.each_with_index.map do |user, i|
-          Player.new(user, self)
+          Player.new(user, self, i)
         end
-
         @first_key_player =  (first && first.is_a?(Fixnum) && @players[first]) ? first : (/\d{1}/.gen.to_i)
+        @players_cycle = Chain::ChainObject.new(@players, cycle: :true, set_to: @first_key_player)
+
 
         @deck_of_cards = DeckOfCards.create!(@players.count)
 
@@ -78,7 +79,6 @@ module ImaginariumGame
     end
 
     def key_player(action=nil)
-      @players_cycle ||= Chain::ChainObject.new(@players, cycle: :true, set_to: 3)
       case action
       when nil
         @players_cycle.current
