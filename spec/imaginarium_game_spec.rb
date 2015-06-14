@@ -106,7 +106,7 @@ RSpec.describe ImaginariumGame do
       @users = Array.new(@players_count).each_with_index.map do |val, index|
         Player.create(name: "player#{index}", email: "player#{index}@mail.com")
       end
-      @first_id = 3
+      @first_id = 0
       @match = ImaginariumGame::Match.start!(22222, @users, @first_id)
       @player = @match.players
     end
@@ -114,6 +114,8 @@ RSpec.describe ImaginariumGame do
     it 'case 1' do
       expect(@match.listen_actions.values.count(:get_key_card)).to eq(1)
       expect(@match.listen_actions.values.count(nil)).to eq(@players_count - 1)
+      expect(@match.key_player.id).to eq(@first_id)
+      expect(@match.current_iteration.status).to eq(:open)
       expect(@match.key_player.id).to eq(@first_id)
     @match.key_player.action :get_key_card, card_number: 10, phrase: 'Mysterious adventure'
 
@@ -128,15 +130,14 @@ RSpec.describe ImaginariumGame do
 
     expect(@match.history.count).to eq(0)
     @player[4].action :get_number, card_number: 12
-
-    expect(@match.history.empty?).to eq(false)
+      puts " "
+      (0..4).each do |n|
+        puts "#{@player[n].id} player#{n} got: " + @player[n].score.to_s
+        puts "#{@player[n].id} key_player #{n}!" if @player[n] == @match.key_player
+      end
+    expect(@match.current_iteration.status).to eq(:open)
+    expect(@match.history.count).to eq(1)
     expect(@match.key_player.id).to eq(@first_id + 1)
-
-    puts " "
-    (0..4).each do |n|
-      puts "#{@player[n].id} player#{n} got: " + @player[n].score.to_s
-      puts "#{@player[n].id} key_player #{n}!" if @player[n] == @match.key_player
-    end
     end
   end
 

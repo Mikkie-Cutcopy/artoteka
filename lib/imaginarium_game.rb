@@ -93,6 +93,7 @@ module ImaginariumGame
       unless @current_iteration
         key_player :set_next
         @current_iteration = GameIteration.new(self)
+        @current_iteration.status = :open
         #@@active_rooms << @room
       end
     end
@@ -147,7 +148,7 @@ module ImaginariumGame
     end
 
     def scoring
-      card_choices = @players_choice.map{|p, c| c[:get_card]}
+      card_choices = @players_choice.map{|p, c| c[:get_number]}
       @players_choice.each do |player, choice|
         player_result = @players_results[player]
         score = 0
@@ -169,7 +170,7 @@ module ImaginariumGame
 
         else # for other players
           # score for guess key card
-          if choice[:get_card].eql?(key_card)
+          if choice[:get_number].eql?(key_card)
             (score += 3)
             player_result[:guess_key_card] = true
           end
