@@ -201,15 +201,22 @@ module ImaginariumGame
     end
 
     def initialize(players_count)
+      cards_count = CARDS_COUNT[players_count]
+      full_deck = (1..98).to_a.shuffle
+      @current_deck = cards_count.eql?(98) ? full_deck : full_deck[1..cards_count]
 
+      @cards = @current_deck.map do |number|
+        Card.new(number, :active)
+      end
+    end
+
+    def to_a
+      @cards
     end
 
   end
 
-  class Card
-    attr_reader :number, :file_path
-    attr_accessor :status, :owner
-  end
+  Card = Struct.new(:number, :status, :file_path, :owner)
 
 end
 
