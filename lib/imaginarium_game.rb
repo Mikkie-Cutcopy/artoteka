@@ -42,9 +42,8 @@ module ImaginariumGame
         @first_key_player =  (first && first.is_a?(Fixnum) && @players[first]) ? first : (/\d{1}/.gen.to_i)
         @players_cycle = Chain::ChainObject.new(@players, cycle: :true, set_to: @first_key_player)
 
-
         @deck_of_cards = DeckOfCards.create!(@players.count, self)
-
+        @deck_of_cards.hand_out
         manage_iteration
         @@active_rooms << @room
       else
@@ -53,7 +52,7 @@ module ImaginariumGame
     end
 
     def manage_iteration
-      @deck_of_cards.hand_out
+
       run_iteration #FIXME
     end
 
@@ -63,7 +62,9 @@ module ImaginariumGame
         @current_iteration.players_results.each do |player, result|
           player.score += result[:score]
         end
-
+        @players.each do |p|
+          p.current_cards = p.current_cards.select{|c| c.status == :active}
+        end
         @history << @current_iteration
         @current_iteration = nil
         #FIXME out of @@active_rooms and clear memory
@@ -88,13 +89,21 @@ module ImaginariumGame
       end
     end
 
+    def game_over
+      self
+    end
+
     private
 
     def run_iteration
       unless @current_iteration
         key_player :set_next
-        @current_iteration = GameIteration.new(self)
-        @current_iteration.status = :open
+        if @deck_of_cards.add_cards_to_players
+          @current_iteration = GameIteration.new(self)
+          @current_iteration.status = :open
+        else
+          game_over
+        end
         #@@active_rooms << @room
       end
     end
@@ -123,10 +132,11 @@ module ImaginariumGame
       #:get_card != :get_number
       card_number = hash_params[:card_number]
       require_is_correct = action.eql?(player.listen_action) && player.listen_action.present? && player.current_cards.map(&:number).include?(card_number)
-      
+
       if require_is_correct
          player.listen_action = nil
-         #card = player.current_cards.select{|c| c.number == card_number}.first
+         card = player.current_cards.select{|c| c.number == card_number}.first
+         card.status = :used if [:get_card, :get_key_card].include?(action)
          @players_choice[player][action], @phrase = hash_params[:card_number], hash_params[:phrase]
          refresh_listen_actions(action)
          try_to_end_iteration
@@ -227,6 +237,20 @@ module ImaginariumGame
           @card.next!
         end
       end
+    end
+
+    def add_cards_to_players
+      response = true
+      @match.players.each do |p|
+        if p.current_cards.count.eql?(4)
+          if @card.next! == nil
+            response = false
+          else
+            p.current_cards << @card.current
+          end
+        end
+      end
+      response
     end
 
     def to_a
