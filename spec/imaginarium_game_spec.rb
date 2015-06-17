@@ -116,6 +116,12 @@ RSpec.describe ImaginariumGame do
       expect(@match.listen_actions.values.count(nil)).to eq(@players_count - 1)
       expect(@match.key_player.id).to eq(@first_id)
       expect(@match.current_iteration.status).to eq(:open)
+
+      @match.players.each do |p|
+        expect(p.current_cards.count).to eq(5)
+        expect(p.current_cards.map(&:status).count(:active)).to eq(5)
+      end
+      #p @match.players.map(&:current_cards).flatten.map(&:number)
     @match.key_player.action :get_key_card, card_number: 10, phrase: 'Mysterious adventure'
 
     @player[1].action :get_card, card_number:   11

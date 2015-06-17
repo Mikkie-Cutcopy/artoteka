@@ -5,10 +5,10 @@ module ImaginariumGame
     COLORS = [:black, :white, :green, :blue, :red, :pink, :orange]
 
     attr_reader :owner, :color, :id
-    attr_accessor :listen_action, :key_player, :score
+    attr_accessor :listen_action, :key_player, :score, :current_cards
 
     def initialize(user, current_match, id)
-      @owner, @color, @current_match, @listen_action, @key_player, @score, @id = user, nil, current_match, nil, false, 0, id
+      @owner, @color, @current_match, @listen_action, @key_player, @score, @id, @current_cards = user, nil, current_match, nil, false, 0, id, []
     end
 
     def action(action_name, hash_params = {})
@@ -43,7 +43,7 @@ module ImaginariumGame
         @players_cycle = Chain::ChainObject.new(@players, cycle: :true, set_to: @first_key_player)
 
 
-        @deck_of_cards = DeckOfCards.create!(@players.count)
+        @deck_of_cards = DeckOfCards.create!(@players.count, self)
 
         manage_iteration
         @@active_rooms << @room
@@ -53,6 +53,7 @@ module ImaginariumGame
     end
 
     def manage_iteration
+      @deck_of_cards.hand_out
       run_iteration #FIXME
     end
 
@@ -120,8 +121,12 @@ module ImaginariumGame
 
     def action(player, action, hash_params)
       #:get_card != :get_number
-      if action.eql?(player.listen_action) && player.listen_action.present?
+      card_number = hash_params[:card_number]
+      require_is_correct = action.eql?(player.listen_action) && player.listen_action.present? && player.current_cards.map(&:number).include?(card_number)
+      
+      if require_is_correct
          player.listen_action = nil
+         #card = player.current_cards.select{|c| c.number == card_number}.first
          @players_choice[player][action], @phrase = hash_params[:card_number], hash_params[:phrase]
          refresh_listen_actions(action)
          try_to_end_iteration
@@ -196,17 +201,31 @@ module ImaginariumGame
 
     CARDS_COUNT = {4 => 96, 5 => 75, 6 => 72, 7 => 98}
 
-    def self.create!(players_count)
-      new(players_count)
+    def self.create!(players_count, match)
+
+      new(players_count, match)
     end
 
-    def initialize(players_count)
+    def initialize(players_count, match)
+      @match = match
       cards_count = CARDS_COUNT[players_count]
       full_deck = (1..98).to_a.shuffle
       @current_deck = cards_count.eql?(98) ? full_deck : full_deck[1..cards_count]
 
-      @cards = @current_deck.map do |number|
-        Card.new(number, :active)
+      @card = Chain::ChainObject.new(@current_deck.map{|number| Card.new(number, :fresh, nil, nil)})
+
+    end
+
+    def hand_out
+      @match.players.each do |p|
+        5.times do
+          @card.current.tap do |card|
+            card.status = :active
+            card.owner  = p
+            p.current_cards << card
+          end
+          @card.next!
+        end
       end
     end
 
