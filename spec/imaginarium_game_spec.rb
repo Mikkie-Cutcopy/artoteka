@@ -13,6 +13,7 @@ RSpec.describe ImaginariumGame do
       end
       @match = ImaginariumGame::Match.start!(11111, @users, first: 0)
       @player = @match.players
+      @key_player_card_num = @match.key_player.current_cards.first.number
     end
 
     it 'start settings' do
@@ -25,14 +26,15 @@ RSpec.describe ImaginariumGame do
     end
 
     it 'get wrong actions' do
+
       @players_count.times do |n|
-        @player[n].action :get_card, card_number: (17 + n)
+        @player[n].action :get_card, card_number: (@key_player_card_num + n)
         expect(@match.current_iteration.players_choice[@player[n]][:get_card]).to eq(nil)
-        @player[n].action :get_number, card_number: (17 + n)
+        @player[n].action :get_number, card_number: (@key_player_card_num + n)
         expect(@match.current_iteration.players_choice[@player[n]][:get_number]).to eq(nil)
 
         unless @player[n].eql?(@match.key_player)
-          @player[n].action :get_key_card, card_number: 17, phrase: 'Mysterious adventure'
+          @player[n].action :get_key_card, card_number: @key_player_card_num, phrase: 'Mysterious adventure'
           expect(@match.current_iteration.players_choice[@player[n]][:get_key_card]).to eq(nil)
         end
       end
@@ -42,7 +44,7 @@ RSpec.describe ImaginariumGame do
     it 'get key card action' do
       expect(@match.key_player.listen_action).to eq(:get_key_card)
 
-      @match.key_player.action :get_key_card, card_number: 17, phrase: 'Mysterious adventure'
+      @match.key_player.action :get_key_card, card_number: @key_player_card_num, phrase: 'Mysterious adventure'
 
       expect(@match.key_player.listen_action).to eq(nil)
       expect(@match.listen_actions.values.count(nil)).to eq(1)
@@ -50,7 +52,7 @@ RSpec.describe ImaginariumGame do
 
       @players_count.times do |n|
         if @player[n].eql?(@match.key_player)
-          expect(@match.current_iteration.players_choice[@player[n]][:get_key_card]).to eq(17)
+          expect(@match.current_iteration.players_choice[@player[n]][:get_key_card]).to eq(@key_player_card_num)
         else
           expect(@match.current_iteration.players_choice[@player[n]][:get_key_card]).to eq(nil)
         end
@@ -61,8 +63,9 @@ RSpec.describe ImaginariumGame do
     end
 
     it 'get card actions' do
+
       @players_count.times do |n|
-        @player[n].action :get_card, card_number: (17 + n)
+        @player[n].action :get_card, card_number: (@player[n].current_cards.first.number)
       end
 
       expect(@match.key_player.listen_action).to eq(nil)
@@ -71,7 +74,7 @@ RSpec.describe ImaginariumGame do
 
       @players_count.times do |n|
         if @player[n].eql?(@match.key_player)
-          expect(@match.current_iteration.players_choice[@player[n]][:get_key_card]).to eq(17)
+          expect(@match.current_iteration.players_choice[@player[n]][:get_key_card]).to eq(@key_player_card_num)
         else
           expect(@match.current_iteration.players_choice[@player[n]][:get_key_card]).to eq(nil)
           expect(@match.current_iteration.players_choice[@player[n]][:get_card]).not_to eq(nil)
@@ -83,7 +86,7 @@ RSpec.describe ImaginariumGame do
 
     it 'get number actions' do
       @players_count.times do |n|
-        @player[n].action :get_number, card_number: (15 + n)
+        @player[n].action :get_number, card_number: (@key_player_card_num)
       end
 
       expect(@match.listen_actions.values.count(:get_key_card)).to eq(1)
@@ -143,10 +146,6 @@ RSpec.describe ImaginariumGame do
         puts "#{@player[n].id} player#{n} got: " + @player[n].score.to_s
         puts "#{@player[n].id} key_player #{n}!" if @player[n] == @match.key_player
       end
-
-
-
-
 
     expect(@match.current_iteration.status).to eq(:open)
     expect(@match.history.count).to eq(1)

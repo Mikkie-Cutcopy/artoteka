@@ -52,7 +52,6 @@ module ImaginariumGame
     end
 
     def manage_iteration
-
       run_iteration #FIXME
     end
 
