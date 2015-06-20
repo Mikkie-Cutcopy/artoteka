@@ -121,25 +121,33 @@ RSpec.describe ImaginariumGame do
         expect(p.current_cards.count).to eq(5)
         expect(p.current_cards.map(&:status).count(:active)).to eq(5)
       end
-      #p @match.players.map(&:current_cards).flatten.map(&:number)
-    @match.key_player.action :get_key_card, card_number: 10, phrase: 'Mysterious adventure'
+      p @match.players.map(&:current_cards).flatten.map(&:number)
 
-    @player[1].action :get_card, card_number:   11
-    @player[2].action :get_card, card_number:   12
-    @player[3].action :get_card, card_number:   13
-    @player[4].action :get_card, card_number:   14
+      key_player_card_num = @match.key_player.current_cards.first.number
 
-    @player[1].action :get_number, card_number: 10
-    @player[2].action :get_number, card_number: 10
-    @player[3].action :get_number, card_number: 12
+    @match.key_player.action :get_key_card, card_number: key_player_card_num, phrase: 'Mysterious adventure'
 
+    @player[1].action :get_card, card_number:   @player[1].current_cards.first.number #11
+    @player[2].action :get_card, card_number:   @player[2].current_cards.first.number #12
+    @player[3].action :get_card, card_number:   @player[3].current_cards.first.number #13
+    @player[4].action :get_card, card_number:   @player[4].current_cards.first.number #14
+
+    @player[1].action :get_number, card_number: key_player_card_num
+    @player[2].action :get_number, card_number: key_player_card_num
+    @player[3].action :get_number, card_number: @player[2].current_cards.first.number #12
+      puts "summary: #{@match.current_iteration.iteration_summary}"
     expect(@match.history.count).to eq(0)
-    @player[4].action :get_number, card_number: 12
+    @player[4].action :get_number, card_number: @player[2].current_cards.first.number  #12
       puts " "
       (0..4).each do |n|
         puts "#{@player[n].id} player#{n} got: " + @player[n].score.to_s
         puts "#{@player[n].id} key_player #{n}!" if @player[n] == @match.key_player
       end
+
+
+
+
+
     expect(@match.current_iteration.status).to eq(:open)
     expect(@match.history.count).to eq(1)
     expect(@match.key_player.id).to eq(@first_id + 1)

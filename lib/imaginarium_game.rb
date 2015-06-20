@@ -131,9 +131,17 @@ module ImaginariumGame
     def action(player, action, hash_params)
       #:get_card != :get_number
       card_number = hash_params[:card_number]
-      require_is_correct = action.eql?(player.listen_action) && player.listen_action.present? && player.current_cards.map(&:number).include?(card_number)
+      card_number_is_valid = if [:get_card, :get_key_card].include?(action)
+                                 player.current_cards.map(&:number).include?(card_number)
+                             elsif [:get_number].include?(action)
+                                 cards = @players_choice.values.map do |p_choice|
+                                   p_choice[:get_card] || p_choice[:get_key_card]
+                                 end
+                                 cards.include?(card_number)
+                             end
+      require_is_valid = action.eql?(player.listen_action) && player.listen_action.present? && card_number_is_valid
 
-      if require_is_correct
+      if require_is_valid
          player.listen_action = nil
          card = player.current_cards.select{|c| c.number == card_number}.first
          card.status = :used if [:get_card, :get_key_card].include?(action)
@@ -141,6 +149,10 @@ module ImaginariumGame
          refresh_listen_actions(action)
          try_to_end_iteration
       end
+    end
+
+    def iteration_summary
+      {:players_choice => @players_choice.values, :players_results => @players_results.values}
     end
 
     private
@@ -201,9 +213,7 @@ module ImaginariumGame
       @players_choice[@current_match.key_player][:get_key_card]
     end
 
-    def iteration_summary
-      {:players_choise => @players_choice, :players_results => @players_results}
-    end
+
 
   end
 
