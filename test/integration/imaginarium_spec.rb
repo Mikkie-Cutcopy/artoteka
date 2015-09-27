@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'rails_helper'
 
-RSpec.describe ImaginariumGame do
+RSpec.describe Imaginarium do
 
   describe 'single iteration' do
 
@@ -10,13 +10,13 @@ RSpec.describe ImaginariumGame do
       @users = Array.new(@players_count).each_with_index.map do |val, index|
         Gamer.create(name: "player#{index}", email: "player#{index}@mail.com")
       end
-      @match = ImaginariumGame::Match.start!(11111, @users, first: 0)
+      @match = Imaginarium::Match.start!(11111, @users, first: 0)
       @player = @match.players
       @key_player_card_num = @match.key_player.current_cards.first.number
     end
 
     it 'start settings' do
-      expect(@match.class).to eq(ImaginariumGame::Match)
+      expect(@match.class).to eq(Imaginarium::Match)
     end
 
     it 'initial listen actions' do

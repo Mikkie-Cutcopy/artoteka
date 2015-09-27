@@ -1,30 +1,17 @@
-module ImaginariumGame
+module Imaginarium
 class Match
 
-  attr_reader :players, :room, :current_iteration, :history
+  attr_reader :players_group, :token, :current_iteration, :history
+  attr_writer :players_group, :deck_of_cards
 
-  @@active_rooms = []
-
-  def self.start!(room, users, first=nil)
-    self.new(room, users, first)
+  def self.create_with!(*names)
+    self.new(names)
   end
 
-  def initialize(room, users, first=nil)
-    if (4..7).include?(users.try(:count)) && room.is_a?(Fixnum) && !(@@active_rooms.include?(room))
-      @room = room; @history = []; @current_iteration = nil
-      @players = users.each_with_index.map do |user, i|
-        Player.new(user, self, i)
-      end
-      @first_key_player =  (first && first.is_a?(Fixnum) && @players[first]) ? first : (/\d{1}/.gen.to_i)
-      @players_cycle = Chain::ChainObject.new(@players, cycle: :true, set_to: @first_key_player)
-
-      @deck_of_cards = Deck.create!(@players.count, self)
-      @deck_of_cards.hand_out
-      manage_iteration
-      @@active_rooms << @room
-    else
-      raise ArgumentError
-    end
+  def initialize(names)
+      players_group = PlayersGroup.build(names)
+      deck = Deck.hand_out!(players_group.count)
+      iteration_manager = IterationManager.start!
   end
 
   def manage_iteration

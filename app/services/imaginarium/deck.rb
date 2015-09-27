@@ -1,15 +1,16 @@
-module ImaginariumGame
+module Imaginarium
 class Deck
 
   CARDS_COUNT = {4 => 96, 5 => 75, 6 => 72, 7 => 98}
 
-  def self.create!(players_count, match)
+  def self.create!(players_count)
 
-    new(players_count, match)
+    new(players_count)
   end
 
-  def initialize(players_count, match)
-    @match = match
+
+
+  def initialize(players_count)
     cards_count = CARDS_COUNT[players_count]
     full_deck = (1..98).to_a.shuffle
     @current_deck = cards_count.eql?(98) ? full_deck : full_deck[1..cards_count]

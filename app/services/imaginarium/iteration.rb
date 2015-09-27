@@ -1,4 +1,5 @@
-module ImaginariumGame
+module Imaginarium
+
 class Iteration
 
   #include Aspectory::Hook

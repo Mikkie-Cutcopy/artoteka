@@ -31,6 +31,8 @@ gem 'pg'
 gem 'slim'
 
 gem 'puma'
+gem 'state_machine'
+gem 'sequence'
 gem 'tubesock'
 gem 'randexp'
 gem 'redis'
