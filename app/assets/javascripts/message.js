@@ -1,4 +1,4 @@
-$(document).ready(function () {
+//$(document).ready(function () {
     var socket = new WebSocket("ws://localhost:3000/message");
 
     socket.onopen = function() {
@@ -50,6 +50,6 @@ $(document).ready(function () {
             }, 5); // wait 5 milisecond for the connection...
     }
     sendMessage("Hello world");
-})
+//})
 
 

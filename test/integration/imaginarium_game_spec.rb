@@ -8,7 +8,7 @@ RSpec.describe ImaginariumGame do
     before(:context) do
       @players_count = 5
       @users = Array.new(@players_count).each_with_index.map do |val, index|
-        Player.create(name: "player#{index}", email: "player#{index}@mail.com")
+        Gamer.create(name: "player#{index}", email: "player#{index}@mail.com")
       end
       @match = ImaginariumGame::Match.start!(11111, @users, first: 0)
       @player = @match.players
@@ -106,7 +106,7 @@ RSpec.describe ImaginariumGame do
     before(:context) do
       @players_count = 5
       @users = Array.new(@players_count).each_with_index.map do |val, index|
-        Player.create(name: "player#{index}", email: "player#{index}@mail.com")
+        Gamer.create(name: "player#{index}", email: "player#{index}@mail.com")
       end
       @first_id = 0
       @match = ImaginariumGame::Match.start!(22222, @users, @first_id)

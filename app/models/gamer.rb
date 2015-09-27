@@ -1,4 +1,4 @@
-class Player < ActiveRecord::Base
+class Gamer < ActiveRecord::Base
   belongs_to :room
 
   validates :name, :email, presence: true
