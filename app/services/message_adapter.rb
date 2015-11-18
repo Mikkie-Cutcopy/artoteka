@@ -33,6 +33,6 @@ module MessageAdapter
   end
 
   def send_to_channel(data)
-    @redis_pub.publish @channel, data
+    @redis_pub.publish(@channel, data)
   end
 end

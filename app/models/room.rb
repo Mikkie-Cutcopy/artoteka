@@ -1,10 +1,10 @@
 class Room < ActiveRecord::Base
-  has_many  :players
+  has_many  :gamers
   validates  :number, uniqueness: true
 
   def self.activate(owner, owner_email)
     @created_room = create(number: number_gen(/\d{5}/.gen), active: false)
-    Player.create(name: owner, email: owner_email, owner: true, room: @created_room)
+    Gamer.create(name: owner, email: owner_email, owner: true, room: @created_room)
     @created_room
   rescue
     raise ArgumentError, 'something went wrong'

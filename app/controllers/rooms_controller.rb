@@ -1,4 +1,3 @@
-require 'imaginarium_game'
 
 class RoomsController < ApplicationController
 
@@ -12,12 +11,11 @@ class RoomsController < ApplicationController
   end
 
   def create
-    # create room and room owner
     @room = Room.activate(params[:owner], params[:owner_email])
     MessageAdapter.subscribe_to_channel(@room.number.to_s)
-
-    set_cookies(imaginarium_name: params[:owner], imaginarium_email: params[:owner_email] )
-
+    {imaginarium_name: params[:owner], imaginarium_email: params[:owner_email]}.each do |key, val|
+      cookies.signed.permanent[key] = val
+    end
     respond_to do |format|
       format.js   {render 'rooms/show'}
     end
@@ -29,7 +27,7 @@ class RoomsController < ApplicationController
   end
 
   private
-
+  
   def room_params
     params.require(:room).permit(:owner, :owner_email, :number)
   end

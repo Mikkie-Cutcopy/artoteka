@@ -17,9 +17,7 @@ class MessageController < ApplicationController
       tubesock.onmessage do |data|
         MessageAdapter.send_to_channel(data)
       end
-
     end
-
   end
 
 end
