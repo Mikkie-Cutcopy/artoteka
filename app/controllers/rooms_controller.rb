@@ -4,7 +4,6 @@ class RoomsController < ApplicationController
   protect_from_forgery except: :show
 
   def new
-    #@testclass = GetTestclass.generate.inspect
     respond_to do |format|
       format.js   {render 'rooms/new'}
     end
@@ -27,7 +26,7 @@ class RoomsController < ApplicationController
   end
 
   private
-  
+
   def room_params
     params.require(:room).permit(:owner, :owner_email, :number)
   end
