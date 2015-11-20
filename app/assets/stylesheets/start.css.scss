@@ -5,16 +5,16 @@
 
 .header {
   font-size: 38px;
-  width: 500px;
+  width: 350px;
   margin: auto;
-  background-color: #6776ff;
+  //background-color: #6776ff;
 }
 
 .popup-container {
   @extend .soft_border;
   background-color: #ececec;
-  width: 500px;
-  height: 500px;
+  width: 400px;
+  height: 430px;
   margin: auto;
   margin-top: 50px;
   //padding-top: 30px;
