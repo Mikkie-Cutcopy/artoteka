@@ -1,0 +1,8 @@
+ru:
+  app:
+    name: app
+  room:
+    new:
+      name: Укажите имя
+      email: Почта
+    create: Создать комнату

@@ -20,4 +20,11 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: "Hello world"
+  app:
+    name: app
+  room:
+    new:
+      name: login
+      email: email
+    create: Create room
+

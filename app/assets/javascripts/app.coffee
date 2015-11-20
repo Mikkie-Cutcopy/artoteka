@@ -1,0 +1,1 @@
+imaginarium = angular.module('imaginarium',[])
