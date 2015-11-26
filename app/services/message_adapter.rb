@@ -9,30 +9,35 @@ module MessageAdapter
 
   def start(socket)
     @socket = socket
-    @channel ||= 'broadcast'
+    @redis_channel ||= 'broadcast'
+    @socket_logger = SocketLogger.new(@redis_channel)
     @redis_sub, @redis_pub = Array.new(2).map do
         Redis.new(url: ENV["REDIS_URL"], driver: :hiredis)
     end
   end
 
   def subscribe_to_channel(channel)
-    @channel = channel
-    @redis_listener = Thread.new do
-                        @redis_sub.subscribe(@channel) do |on|
-                          on.message do |redis_channel, msg|
-                            send_to_user "##{redis_channel} -  #{msg}"
-                          end
-                      end
+    @redis_channel = channel
+    Thread.new do
+      @redis_sub.subscribe(@redis_channel) do |on|
+        on.message do |redis_channel, msg|
+          send_to_user msg
+        end
+      end
     end
 
-    send_to_user("you have been subscribed to #{@channel}")
+    send_to_user("you have been subscribed to #{@redis_channel}")
   end
 
   def send_to_user(data)
+    return unless @socket
     @socket.send_data(data)
+    @socket_logger.response(data)
   end
 
   def send_to_channel(data)
-    @redis_pub.publish(@channel, data)
+    return unless @redis_pub
+    @redis_pub.publish(@redis_channel, data)
+    @socket_logger.request(data)
   end
 end
