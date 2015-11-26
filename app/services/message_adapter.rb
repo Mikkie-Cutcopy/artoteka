@@ -11,9 +11,7 @@ module MessageAdapter
     @socket = socket
     @redis_channel ||= 'broadcast'
     @socket_logger = SocketLogger.new(@redis_channel)
-    @redis_sub, @redis_pub = Array.new(2).map do
-        Redis.new(url: ENV["REDIS_URL"], driver: :hiredis)
-    end
+    @redis_sub, @redis_pub = redis_instance, redis_instance
   end
 
   def subscribe_to_channel(channel)
@@ -39,5 +37,11 @@ module MessageAdapter
     return unless @redis_pub
     @redis_pub.publish(@redis_channel, data)
     @socket_logger.request(data)
+  end
+
+  private
+
+  def redis_instance
+    Redis.new(url: ENV["REDIS_URL"], driver: :hiredis)
   end
 end
