@@ -1,4 +1,6 @@
 class SocketLogger < Logger
+  attr_accessor :redis_channel
+
   def initialize(redis_channel)
     @redis_channel = redis_channel
     super(STDOUT)
@@ -11,4 +13,5 @@ class SocketLogger < Logger
   def response(data)
     info("SOCKET RESPONSE: channel ##{@redis_channel}, message: #{data}")
   end
+
 end
