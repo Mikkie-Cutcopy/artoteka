@@ -3,10 +3,10 @@ div.popup-content.start_popup
     p.roboto33
       = @room.number
   div.space20
-  - @room.gamers.each do |p|
+  - @room.gamers.each do |gamer|
     div.space20
     div.form_element
       p.roboto20
-        = p.name
+        = gamer.user.name
       p.roboto20
-        = p.email
+        = gamer.user.email
