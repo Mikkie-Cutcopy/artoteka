@@ -1,5 +1,5 @@
 
-    var socket = new WebSocket("ws://localhost:3000/message");
+    var socket = new WebSocket("ws://192.168.1.71:3000/message");
 
     socket.onopen = function() {
         alert("Соединение установлено.");
@@ -48,7 +48,9 @@
 
             }, 5); // wait 5 milisecond for the connection...
     }
-    sendMessage("Hello world");
+    sendMessage("Success connection");
+
+
 
 
 

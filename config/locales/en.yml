@@ -27,4 +27,5 @@ en:
       name: login
       email: email
     create: Create room
+    join: Join!
 

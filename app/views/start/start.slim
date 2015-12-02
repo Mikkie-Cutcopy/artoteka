@@ -1,13 +1,13 @@
 div.popup-content.start_popup ng-app="imaginarium"
   div style='height: 20px'
-  = form_tag define_room_path, method: :get, remote: :true
+  = form_tag new_session_path, method: :get, remote: :true
     p.roboto33
       | Войти в комнату
-    input.inpt name='number' ng-model="roomNumber"
+    input.inpt name='room_number' ng-model="roomNumber"
     div style='height: 20px'
     h1 ng-if="roomNumber"
       | Hello, {{roomNumber}}
-    = button_to 'Вход', define_room_path, method: :get, class: 'btn'
+    = button_to 'Вход', new_session_path, method: :get, class: 'btn'
   p.roboto33
     | или
   = button_to t('room.create'), new_room_path, method: :get, remote: :true, class: 'btn create_room'

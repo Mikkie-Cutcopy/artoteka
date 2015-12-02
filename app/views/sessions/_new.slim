@@ -1,0 +1,12 @@
+div.popup-content.sign_up_popup
+  = form_tag session_path, remote: :true
+    div style='height: 10px'
+    p.roboto33
+      = t('room.new.name')
+    input.inpt name='owner' value="#{cookies.signed[:imaginarium_name] || ''}"
+    p.roboto33
+      = t('room.new.email')
+    = hidden_field_tag :room_number, @room_number
+    input.inpt name='owner_email'  value="#{cookies.signed[:imaginarium_email] || ''}"
+    div style='height: 40px'
+    = button_to t('room.join'), session_path, class: 'btn create_room2'

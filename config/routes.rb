@@ -9,6 +9,7 @@ Rails.application.routes.draw do
   resources :rooms
   get 'message' => 'message#message'
   get 'define_room' => 'rooms#show'
+  resource 'session', only: [:new, :create]
   #get 'say_hi'      => 'message#say_hi'
   # Example of regular route:
   #   get 'products/:\id' => 'catalog#view'
