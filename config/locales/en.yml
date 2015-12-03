@@ -21,7 +21,7 @@
 
 en:
   app:
-    name: app
+    name: Imaginarium
   room:
     new:
       name: login
