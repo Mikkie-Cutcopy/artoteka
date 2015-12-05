@@ -4,6 +4,8 @@ Rails.application.routes.draw do
 
   # You can have the root of your site routed with "root"
   root 'start#start'
+  get 'connect' => 'connection#socket_listen'
+  get 'define_room' => 'rooms#show'
 
 
   resources :rooms, param: :number do
@@ -11,8 +13,6 @@ Rails.application.routes.draw do
   end
   resource :session, only: [:new, :create]
 
-  get 'message' => 'message#message'
-  get 'define_room' => 'rooms#show'
 
   #get 'say_hi'      => 'message#say_hi'
   # Example of regular route:

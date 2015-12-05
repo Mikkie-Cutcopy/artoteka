@@ -5,13 +5,29 @@ require 'json'
 module Imaginarium::MessageAdapter
   module_function
 
-  def start(socket)
-    @socket = socket
+  def start_socket_listen(env)
+    hijack(env) do |tubesock|
+      #on connect with server
+      tubesock.onopen do
+        prepare_connection(tubesock)
+      end
+      tubesock.onclose do
+      end
+      #on message by user
+      tubesock.onmessage do |data|
+        send_to_channel(data)
+      end
+    end
+  end
+
+  def prepare_connection(tubesock)
+    @socket = tubesock
     @socket_logger = SocketLogger.new(@redis_channel)
     @redis_sub, @redis_pub = redis_instance, redis_instance
   end
 
   def subscribe_to_channel(channel)
+    return unless @socket
     @redis_channel = channel
     @socket_logger.redis_channel = @redis_channel
     Thread.new do
@@ -32,9 +48,18 @@ module Imaginarium::MessageAdapter
   end
 
   def send_to_channel(data)
-    return unless @redis_pub
+    return unless @socket
     @redis_pub.publish(@redis_channel, data)
     @socket_logger.request(data)
+  end
+
+  def hijack(env)
+    sock = Tubesock.hijack(env)
+    yield sock
+    sock.onclose do
+      ActiveRecord::Base.clear_active_connections! if defined? ActiveRecord
+    end
+    sock.listen
   end
 
   def redis_instance

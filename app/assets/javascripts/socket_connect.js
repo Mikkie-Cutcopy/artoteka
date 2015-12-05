@@ -1,5 +1,5 @@
 function socketConnect() {
-    var socket = new WebSocket("ws://192.168.1.71:3000/message");
+    var socket = new WebSocket("ws://192.168.1.71:3000/connect");
     socket.onopen = function() {
         console.log("onopen")
         alert("Соединение установлено.");
