@@ -18,6 +18,14 @@
   padding: 10px;
 }
 
+.list_item {
+  @extend .form_element;
+  background: #ededed;
+  width: 350px;
+  height: 40px;
+  padding: 3px;
+}
+
 .inpt {
   @extend .form_element;
   width: 350px;
@@ -42,3 +50,5 @@
 .space20 {
   height: 20px;
 }
+
+

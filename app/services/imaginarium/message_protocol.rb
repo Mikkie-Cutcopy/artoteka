@@ -1,0 +1,3 @@
+module Imaginarium::MessageProtocol
+
+end

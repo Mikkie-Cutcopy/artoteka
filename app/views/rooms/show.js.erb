@@ -1,3 +1,4 @@
-history.pushState('', '', "room/" + "<%= @room.number %>")
+history.pushState('', '', "rooms/" + "<%= @room.number %>")
 $('div.popup-container > div.popup-content').remove()
 $('div.popup-container').append("<%= j render 'rooms/show'%>")
+socketConnect();

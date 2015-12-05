@@ -6,10 +6,14 @@ Rails.application.routes.draw do
   root 'start#start'
 
 
-  resources :rooms
+  resources :rooms, param: :number do
+    resource :game
+  end
+  resource :session, only: [:new, :create]
+
   get 'message' => 'message#message'
   get 'define_room' => 'rooms#show'
-  resource 'session', only: [:new, :create]
+
   #get 'say_hi'      => 'message#say_hi'
   # Example of regular route:
   #   get 'products/:\id' => 'catalog#view'

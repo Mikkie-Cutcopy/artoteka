@@ -1,4 +1,4 @@
-module Imaginarium
+module Imaginarium::Game
 
 class Iteration
 

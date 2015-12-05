@@ -15,14 +15,17 @@ class RoomsController < ApplicationController
     respond_to do |format|
       format.js   {render 'rooms/show'}
     end
-    MessageAdapter.send_to_client(JSON.generate(
+    Imaginarium::MessageAdapter.send_to_client(JSON.generate(
       authenticity_token: params[:authenticity_token])
     )
   end
 
   def show
     @room = Room.find_by_number(params[:number].to_i)
-    render 'rooms/show'
+    respond_to do |format|
+      format.js   {render 'rooms/show'}
+      format.html {render 'rooms/show'}
+    end
   end
 
   private

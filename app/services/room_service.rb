@@ -8,7 +8,7 @@ module RoomService
       room = Room.create(number: generate_number, active: false)
       user = User.find_or_create_by(name: owner, email: owner_email)
       Gamer.find_or_create_by(user: user, room: room, owner: true)
-      MessageAdapter.subscribe_to_channel(room.number.to_s)
+      Imaginarium::MessageAdapter.subscribe_to_channel(room.number.to_s)
       room
     end
   end
@@ -18,7 +18,7 @@ module RoomService
       room  = Room.find(room_id)
       user  = User.find_or_create_by(name: user_name, email: user_email)
       gamer = Gamer.find_or_create_by(user: user, room: room)
-      MessageAdapter.subscribe_to_channel(room.number.to_s)
+      Imaginarium::MessageAdapter.subscribe_to_channel(room.number.to_s)
       gamer
     end
   end

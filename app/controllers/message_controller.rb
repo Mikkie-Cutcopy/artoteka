@@ -1,6 +1,6 @@
 require 'redis'
 require 'json'
-require 'message_adapter'
+require 'imaginarium/message_adapter'
 
 
 class MessageController < ApplicationController
@@ -10,12 +10,16 @@ class MessageController < ApplicationController
     hijack do |tubesock|
       #on connect with server
       tubesock.onopen do
-        MessageAdapter.start(tubesock)
+        Imaginarium::MessageAdapter.start(tubesock)
+      end
+
+      tubesock.onclose do
+
       end
 
       #on message by user
       tubesock.onmessage do |data|
-        MessageAdapter.send_to_channel(data)
+        Imaginarium::MessageAdapter.send_to_channel(data)
       end
     end
   end

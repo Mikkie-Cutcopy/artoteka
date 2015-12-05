@@ -14,9 +14,9 @@ class SessionsController < ApplicationController
       respond_to do |format|
         format.js   {render 'rooms/show'}
       end
-      MessageAdapter.send_to_client(JSON.generate(authenticity_token: params[:authenticity_token]))
+      Imaginarium::MessageAdapter.send_to_client(JSON.generate(authenticity_token: params[:authenticity_token]))
     else
-      MessageAdapter.send_to_client(JSON.generate(error: 'Resource not found', status: 404))
+      Imaginarium::MessageAdapter.send_to_client(JSON.generate(error: 'Resource not found', status: 404))
       render nothing: true
     end
   end

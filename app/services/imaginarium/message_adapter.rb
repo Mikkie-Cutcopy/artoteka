@@ -2,12 +2,11 @@ require 'rubygems'
 require 'redis'
 require 'json'
 
-module MessageAdapter
+module Imaginarium::MessageAdapter
   module_function
 
   def start(socket)
     @socket = socket
-    @redis_channel ||= 'broadcast'
     @socket_logger = SocketLogger.new(@redis_channel)
     @redis_sub, @redis_pub = redis_instance, redis_instance
   end
@@ -42,3 +41,4 @@ module MessageAdapter
     Redis.new(url: ENV["REDIS_URL"], driver: :hiredis)
   end
 end
+
