@@ -3,7 +3,6 @@
  */
 $(document).on('click', '#new_room_connect', submitAfterConnect)
 
-
 function submitAfterConnect(){
     var connection = socketConnect();
     connection.wait_for_socket_connection(function(){

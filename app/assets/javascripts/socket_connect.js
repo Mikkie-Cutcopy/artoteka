@@ -36,7 +36,7 @@ function socketConnect() {
     // Make the function wait until the connection is made...
 
     function connection() {
-      return socket
+        return socket;
     }
 
     connection.send_message = function(msg){
@@ -45,10 +45,7 @@ function socketConnect() {
             console.log("message sent!!!");
             socket.send(msg);
         });
-
-
     }
-
 
     function waitForSocketConnection(socket, callback){
         setTimeout(
@@ -84,10 +81,14 @@ function socketConnect() {
     connection.wait_for_socket_connection = function(callback){
         waitForSocketConnection(socket, callback)
     }
+    window.currentSocketConnection = connection;
     return connection;
 };
 
 
+function getCurrentConnection(){
+    return window.currentSocketConnection;
+};
 
 
 
