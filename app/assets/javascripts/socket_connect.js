@@ -46,24 +46,27 @@ function socketConnect() {
             socket.send(msg);
         });
 
-        function waitForSocketConnection(socket, callback){
-            setTimeout(
-                function () {
-                    if (socket.readyState === 1) {
-                        console.log("Connection is made")
-                        if(callback != null){
-                            callback();
-                        }
-                        return;
 
-                    } else {
-                        console.log("wait for connection...")
-                        waitForSocketConnection(socket, callback);
+    }
+
+
+    function waitForSocketConnection(socket, callback){
+        setTimeout(
+            function () {
+                if (socket.readyState === 1) {
+                    console.log("Connection is made")
+                    if(callback != null){
+                        callback();
                     }
+                    return;
 
-                },
+                } else {
+                    console.log("wait for connection...")
+                    waitForSocketConnection(socket, callback);
+                }
+
+            },
             5); // wait 5 milisecond for the connection...
-        }
     }
 
     connection.close = function() {
@@ -72,6 +75,14 @@ function socketConnect() {
 
     connection.reset = function(){
         socketConnect();
+    }
+
+    connection.ready_state = function(){
+        return socket.readyState;
+    }
+
+    connection.wait_for_socket_connection = function(callback){
+        waitForSocketConnection(socket, callback)
     }
     return connection;
 };
