@@ -11,8 +11,6 @@ module Imaginarium::MessageAdapter
       tubesock.onopen do
         prepare_connection(tubesock)
       end
-      tubesock.onclose do
-      end
       #on message by user
       tubesock.onmessage do |data|
         send_to_channel(data)

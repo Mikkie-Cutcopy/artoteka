@@ -81,6 +81,7 @@ function socketConnect() {
     connection.wait_for_socket_connection = function(callback){
         waitForSocketConnection(socket, callback)
     }
+
     window.currentSocketConnection = connection;
     return connection;
 };

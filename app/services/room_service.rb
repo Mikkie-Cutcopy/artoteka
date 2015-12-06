@@ -8,6 +8,7 @@ module RoomService
       user = User.find_or_create_by(name: owner, email: owner_email)
       room = Room.create(number: generate_number, active: false)
       Gamer.find_or_create_by(user: user, room: room, owner: true)
+      Imaginarium::MessageProtocol::Statement::Room.new(room)
       Imaginarium::MessageAdapter.subscribe_to_channel(room.number.to_s)
       room
     end
