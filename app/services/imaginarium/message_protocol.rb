@@ -9,13 +9,21 @@ module Imaginarium::MessageProtocol
 
       alias_method :auth_token, :id
 
-      def initialize(object=nil)
-        Redis::Objects.redis = MessageAdapter.redis_instance
-        object.update_attribute(:auth_token, auth_token) if object.respond_to?(:auth_token)
+      def initialize
+        #TODO replace with connection pool
+        Redis::Objects.redis = Imaginarium::MessageAdapter.redis_instance
+      end
+
+      def bind_to!(object)
+        if object.class.name == self.class.name.split('::').last && object.redis_token
+          @auth_token = object.redis_token
+        else
+          #TODO something going wrong
+        end
       end
     end
   end
-  
+
   class Room < Statement::Base
     hash_key :gamers
     value :chat
@@ -27,6 +35,5 @@ module Imaginarium::MessageProtocol
   end
 
   class Chat < Statement::Base
-
   end
 end
