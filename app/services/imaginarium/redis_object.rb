@@ -46,6 +46,7 @@ module Imaginarium::RedisObject
           redis_objects.each do |redis_object|
             #if redis_model == redis_object.class.name.demodulize.downcase.to_sym
             send(redis_model.to_s) << redis_object.auth_token
+            redis_object.send(self.class.name.demodulize.underscore.to_s + "=", @auth_token)
           end
         end
         define_method("get_#{redis_model.to_s}") do
