@@ -1,4 +1,4 @@
-module Imaginarium::RedisObject
+module Imaginarium::RedisModel
   class Base
     include Redis::Objects
 
@@ -26,7 +26,7 @@ module Imaginarium::RedisObject
     #if you have 'list :gamers' you may add Gamer < ActiveRecord object, but it must have redis_token
     def <<(object)
       if object.redis_token
-        method = object.class.name.downcase.pluralize.to_sym
+        method = object.class.name.underscore.pluralize.to_sym
         unless send(method).values.include?(object.redis_token)
           send(method) << object.redis_token
         end
@@ -43,16 +43,19 @@ module Imaginarium::RedisObject
       else
         list redis_model
         define_method("set_#{redis_model.to_s}=") do |redis_objects|
+          dependent_method = self.class.name.demodulize.underscore
           redis_objects.each do |redis_object|
-            #if redis_model == redis_object.class.name.demodulize.downcase.to_sym
+            return if send(redis_model).values.include?(redis_object.id)
+            return unless redis_model.to_s.pluralize == redis_object.underscored_class.pluralize
             send(redis_model.to_s) << redis_object.auth_token
-            redis_object.send(self.class.name.demodulize.underscore.to_s + "=", @auth_token)
+            redis_object.send(dependent_method + "=", @auth_token)
           end
         end
         define_method("get_#{redis_model.to_s}") do
           send(redis_model).values.map do |auth_token|
-            ("Imaginarium::RedisObject::" + redis_model.to_s.classify)
-            .constantize.redis_find(auth_token)
+            return unless send(redis_model.to_s).exists?
+            (self.class.name.deconstantize + "::" + redis_model.to_s.classify)
+                .constantize.redis_find(auth_token)
           end
         end
       end
@@ -60,39 +63,33 @@ module Imaginarium::RedisObject
 
     def self.belongs(redis_model)
       value redis_model
+      # Gamer.new.set_room= redis_object
       define_method("set_#{redis_model.to_s}=") do |redis_object|
-        if redis_model == redis_object.class.name.demodulize.downcase.to_sym
-          send("#{redis_model.to_s}=", redis_object.auth_token)
+        dependent_method = self.class.name.demodulize.underscore
+        return unless redis_model.to_s.pluralize == redis_object.underscored_class.pluralize
+        send("#{redis_model.to_s}=", redis_object.auth_token)
+
+        if redis_object.respond_to?(dependent_method.to_sym)
+          redis_object.send(dependent_method + "=", @auth_token)
+        elsif redis_object.respond_to?(dependent_method.pluralize.to_sym)
+          return if redis_object.send(dependent_method.pluralize).values.include?(@auth_token)
+          redis_object.send(dependent_method.pluralize) << @auth_token
         end
       end
+      # Gamer.new.get_room
       define_method("get_#{redis_model.to_s}") do
-        ("Imaginarium::RedisObject::" + redis_model.to_s.classify)
-        .constantize.redis_find(send(redis_model).value)
+        return unless send(redis_model.to_s).exists?
+        (self.class.name.deconstantize + "::" + redis_model.to_s.classify)
+            .constantize.redis_find(send(redis_model).value)
       end
+    end
+
+    def underscored_class
+      self.class.name.demodulize.underscore
     end
 
     def self.singularity?(str)
       str.pluralize != str && str.singularize == str
     end
-  end
-
-  class Room < Base
-    has :gamers
-    has :game
-    has :chat
-    value :status
-  end
-
-  class Gamer < Base
-    belongs :room
-    value :name
-  end
-
-  class Game < Base
-    belongs :room
-    value :status
-  end
-
-  class Chat < Base
   end
 end
