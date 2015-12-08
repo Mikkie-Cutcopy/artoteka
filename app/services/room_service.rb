@@ -7,8 +7,8 @@ module RoomService
     ActiveRecord::Base.transaction do
       user = User.find_or_create_by(name: owner, email: owner_email)
       room = Room.create(number: generate_number, redis_token: generate_redis_token, active: false)
-      Gamer.find_or_create_by(user: user, room: room, redis_token: generate_redis_token, owner: true)
-      Imaginarium::MessageProtocol::Statement::Room.new.bind_to!(room)
+      gamer = Gamer.create(user: user, room: room, redis_token: generate_redis_token, owner: true)
+      Imaginarium::RedisObject::Room.new.bind_to!(room) << gamer
       Imaginarium::MessageAdapter.subscribe_to_channel(room.number.to_s)
       room
     end
@@ -30,6 +30,6 @@ module RoomService
   end
 
   def generate_redis_token
-    SecureRandom.hex
+    Imaginarium::MessageProtocol.generate_redis_token
   end
 end
