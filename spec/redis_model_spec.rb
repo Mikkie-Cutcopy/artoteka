@@ -6,6 +6,7 @@ RSpec.describe Imaginarium::RedisModel do
     let (:room) {Imaginarium::RedisModel::Room.new}
     let (:gamer) {Imaginarium::RedisModel::Gamer.new}
     let (:gamer2) {Imaginarium::RedisModel::Gamer.new}
+    let (:game) {Imaginarium::RedisModel::Game.new}
 
     it "check without values" do
       expect(room.get_gamers).to eq([])
@@ -32,5 +33,36 @@ RSpec.describe Imaginarium::RedisModel do
       expect(room.get_gamers.count).to eq(2)
     end
 
+    it "detach values for 'belongs :model'" do
+      room.set_gamers = [gamer, gamer2]
+      expect(room.get_gamers.count).to eq(2)
+      expect(gamer2.get_room.id).to eq(room.id)
+
+      gamer2.detach_room
+      expect(room.get_gamers.count).to eq(1)
+      expect(gamer2.get_room).to eq(nil)
+      expect(room.get_gamers.first.id).to eq(gamer.id)
+    end
+
+    it "detach values for 'has :models'" do
+      room.set_gamers = [gamer, gamer2]
+      expect(room.get_gamers.count).to eq(2)
+      expect(gamer2.get_room.id).to eq(room.id)
+
+      room.detach_gamers = [gamer2]
+      expect(room.get_gamers.count).to eq(1)
+      expect(gamer2.get_room).to eq(nil)
+      expect(room.get_gamers.first.id).to eq(gamer.id)
+    end
+
+    it "detach values for 'has :model'" do
+      room.set_game = game
+      expect(room.get_game.id).to eq(game.id)
+      expect(game.get_room.id).to eq(room.id)
+
+      room.detach_game
+      expect(room.get_game).to eq(nil)
+      expect(game.get_room).to eq(nil)
+    end
   end
 end
