@@ -4,8 +4,22 @@ require 'imaginarium/message_adapter'
 
 
 class ConnectionController < ApplicationController
+  include Tubesock::Hijack
   def socket_listen
-    Imaginarium::MessageAdapter.start_socket_listen(env)
-    render text: nil, status: -1
+      hijack do |tubesock|
+        #on connect with server
+        tubesock.onopen do
+          Imaginarium::MessageAdapter.start(tubesock)
+        end
+
+        tubesock.onclose do
+          Imaginarium::SocketsStore.kill(tubesock)
+        end
+        #on message by user
+        tubesock.onmessage do |data|
+          Imaginarium::MessageAdapter.route(tubesock, data)
+          #Imaginarium::MessageAdapter.send_to_channel(data)
+        end
+      end
   end
 end

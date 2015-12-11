@@ -5,27 +5,15 @@ require 'json'
 module Imaginarium::MessageAdapter
   module_function
 
-  def start_socket_listen(env)
-    hijack(env) do |tubesock|
-      #on connect with server
-      tubesock.onopen do
-        prepare_connection(tubesock)
-      end
-      #on message by user
-      tubesock.onmessage do |data|
-        send_to_channel(data)
-      end
-    end
-  end
+  MAIN_CHANNEL = 'broadcast'
 
-  def prepare_connection(tubesock)
-    @socket = tubesock
-    @socket_logger = SocketLogger.new(@redis_channel)
+  def start(tubesock, auth_token)
+    Imaginarium::SocketsStore.record(tubesock, auth_token)
     @redis_sub, @redis_pub = redis_instance, redis_instance
+    subscribe_to_channel(MAIN_CHANNEL)
   end
 
   def subscribe_to_channel(channel)
-    return unless @socket
     @redis_channel = channel
     @socket_logger.redis_channel = @redis_channel
     Thread.new do
@@ -36,28 +24,25 @@ module Imaginarium::MessageAdapter
       end
     end
 
-    send_to_client("you have been subscribed to #{@redis_channel}")
+   # send_to_client("you have been subscribed to #{@redis_channel}")
   end
 
-  def send_to_client(data)
-    return unless @socket
-    @socket.send_data(data)
-    @socket_logger.response(data)
+  def send_to_clients(data, auth_tokens = [])
+    Imaginarium::SocketsStore.extract(auth_tokens).each{|s| s.send_data(data)}
+    socket_logger.response(data)
   end
 
   def send_to_channel(data)
-    return unless @socket
     @redis_pub.publish(@redis_channel, data)
-    @socket_logger.request(data)
+    socket_logger.request(data)
   end
 
-  def hijack(env)
-    sock = Tubesock.hijack(env)
-    yield sock
-    sock.onclose do
-      ActiveRecord::Base.clear_active_connections! if defined? ActiveRecord
-    end
-    sock.listen
+  def route(socket, data)
+
+  end
+
+  def socket_logger
+    @socket_logger ||= SocketLogger.new(MAIN_CHANNEL)
   end
 
   def redis_instance

@@ -39,6 +39,7 @@ gem 'tubesock'
 gem 'randexp'
 gem 'redis'
 gem 'redis-namespace'
+gem "default_value_for"
 gem 'redis-objects'
 gem 'hiredis'
 gem 'pry'
