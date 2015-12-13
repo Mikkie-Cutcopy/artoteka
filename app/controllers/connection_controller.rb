@@ -17,7 +17,7 @@ class ConnectionController < ApplicationController
         end
         #on message by user
         tubesock.onmessage do |data|
-          Imaginarium::MessageAdapter.route(tubesock, data)
+          Imaginarium::MessageAdapter.hundle(tubesock, data)
           #Imaginarium::MessageAdapter.send_to_channel(data)
         end
       end

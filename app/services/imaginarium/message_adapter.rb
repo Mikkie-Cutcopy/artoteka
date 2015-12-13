@@ -27,6 +27,11 @@ module Imaginarium::MessageAdapter
    # send_to_client("you have been subscribed to #{@redis_channel}")
   end
 
+  def hundle(tubesock, data)
+    response = MessageProtocol::Request.new(data).call
+    tubesock.send_data(response)
+  end
+
   def send_to_clients(data, auth_tokens = [])
     Imaginarium::SocketsStore.extract(auth_tokens).each{|s| s.send_data(data)}
     socket_logger.response(data)
