@@ -1,9 +1,22 @@
 module Imaginarium::RedisModel
   class Base
     include Redis::Objects
+    abstract
+    value :attachment_id
 
     def id
       @auth_token ||= Imaginarium::MessageProtocol.generate_redis_token
+    end
+
+    def attached?
+      return true if attachment_id.value
+      # try to find ActiveRecord model
+      record = self.class.name.demodulize.constantize.find_by(redis_token: auth_token)
+      if record
+        self.attachment_id = record.id
+        return true
+      end
+      false
     end
 
     alias_method :auth_token, :id
@@ -14,6 +27,7 @@ module Imaginarium::RedisModel
       Redis::Objects.redis = Imaginarium::MessageAdapter.redis_instance
     end
 
+    # bind to ActiveRecord object
     def bind_to!(object)
       if object.class.name == self.class.name.demodulize && object.redis_token
         @auth_token = object.redis_token
@@ -38,7 +52,8 @@ module Imaginarium::RedisModel
         (name.deconstantize + "::" + redis_model.to_s.classify)
             .constantize.new(token: token)
       else
-        new(token: token)
+        tmp = new(token: token)
+        tmp if tmp.attached?
       end
     end
 

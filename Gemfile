@@ -49,6 +49,7 @@ gem 'state_machine'
 gem 'rspec'
 gem 'rspec-rails'
 gem 'aspectory'
+gem 'abstraction'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 

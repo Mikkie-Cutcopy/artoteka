@@ -1,5 +1,5 @@
 module Imaginarium::Controller
-  class GamersController < Base
+  class GamersController < ApplicationController
 
     def connect
       #берем token геймера
