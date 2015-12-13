@@ -19,7 +19,7 @@ module Imaginarium::MessageProtocol
     end
 
     def routes_resolve(entity)
-      (CONTROLLERS_PATH.camelize + '::' + entity.pluralize.classify + 'Controller').constantize
+      (CONTROLLERS_PATH.camelize + '::' + entity.classify.pluralize + 'Controller').constantize
     end
   end
 
