@@ -28,4 +28,5 @@ module Imaginarium::MessageProtocol
     SecureRandom.hex
   end
 
+
 end

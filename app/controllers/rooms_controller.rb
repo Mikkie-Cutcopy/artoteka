@@ -15,9 +15,9 @@ class RoomsController < ApplicationController
     respond_to do |format|
       format.js   {render 'rooms/show'}
     end
-    Imaginarium::MessageAdapter.send_to_client(JSON.generate(
-      authenticity_token: params[:authenticity_token])
-    )
+    #Imaginarium::MessageAdapter.send_to_client(JSON.generate(
+    #  authenticity_token: params[:authenticity_token])
+    #)
   end
 
   def show

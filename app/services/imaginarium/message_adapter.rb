@@ -3,9 +3,13 @@ require 'redis'
 require 'json'
 
 class Imaginarium::MessageAdapter
-  attr_reader :socket, :socket_logger, :redis_channel
+  attr_reader :socket, :redis_channel
 
   MAIN_CHANNEL = 'broadcast'
+
+  def self.redis_instance
+    Redis.new(url: ENV["REDIS_URL"], driver: :hiredis)
+  end
 
   def start(socket)
     @socket = socket
@@ -44,15 +48,12 @@ class Imaginarium::MessageAdapter
   end
 
   def redis_pub
-    @redis_pub ||= redis_instance
+    @redis_pub ||= self.class.redis_instance
   end
 
   def redis_sub
-    @redis_sub ||= redis_instance
+    @redis_sub ||= self.class.redis_instance
   end
 
-  def redis_instance
-    Redis.new(url: ENV["REDIS_URL"], driver: :hiredis)
-  end
 end
 
