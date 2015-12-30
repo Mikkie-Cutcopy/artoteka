@@ -2,15 +2,15 @@ module Imaginarium::SocketsStore
 
   LIMIT = 10000
 
-  class Object
+  class SocketObject
     attr_reader :socket, :auth_token
-    def initialize(socket, auth_token)
-      @socket, @auth_token = socket, auth_token
+    def initialize(socket)
+      @socket = socket
     end
   end
 
   def record(socket)
-    active << Object.new(socket, auth_token) if count < LIMIT
+    active << SocketObject.new(socket) if count < LIMIT
   end
 
   def active
