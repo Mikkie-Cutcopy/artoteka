@@ -1,5 +1,5 @@
 function socketConnect() {
-    var socket = new WebSocket("ws://192.168.1.68:3000/connect");
+    var socket = new WebSocket("ws://localhost:3000/connect");
     socket.onopen = function() {
         console.log("onopen")
         alert("Соединение установлено.");
@@ -17,7 +17,7 @@ function socketConnect() {
         alert("Получены данные " + event.data);
         var responseObject = JSON.parse(event.data) ;
         console.log(responseObject);
-        if (responseObject.redirect == true) {
+        if (responseObject.redirect == "true") {
             $.ajax({
                 url: responseObject.redirect_url,
                 type: "GET",
