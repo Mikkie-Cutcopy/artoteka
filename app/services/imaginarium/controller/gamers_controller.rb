@@ -1,5 +1,5 @@
 module Imaginarium::Controller
-  class GamersController < ApplicationController
+  class GamersController < InitialController
     before :identification
 
     def connect

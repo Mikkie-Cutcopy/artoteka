@@ -4,6 +4,7 @@ require 'json'
 
 class Imaginarium::MessageAdapter
   attr_reader :socket, :redis_channel
+  attr_accessor :redis_token
 
   MAIN_CHANNEL = 'broadcast'
 
@@ -21,16 +22,18 @@ class Imaginarium::MessageAdapter
     socket_logger.redis_channel = @redis_channel
     Thread.new do
       redis_sub.subscribe(@redis_channel) do |on|
-        on.message do |_, msg|
-          send_to_client msg
+        on.message do |channel, msg|
+          redis_channel_filter(channel, msg)
         end
       end
     end
   end
 
-  def hundle(data)
-    response = MessageProtocol::Request.new(data).call
-    send_to_client(response)
+  def hundle(msg)
+    data = JSON.parse(msg)
+    data.merge!('adapter' => self)
+    response = Imaginarium::MessageProtocol::Request.new(data).call
+    send_to_client(response.to_json)
   end
 
   def send_to_client(data)
@@ -39,8 +42,18 @@ class Imaginarium::MessageAdapter
   end
 
   def send_to_channel(data)
-    redis_pub.publish(@redis_channel, data)
-    socket_logger.request(data)
+    if @redis_token
+      data.merge!('from' => @redis_token)
+      redis_pub.publish(@redis_channel, data.to_json)
+      socket_logger.request(data)
+    end
+  end
+
+  def redis_channel_filter(channel, msg)
+    data = JSON.parse(msg)
+    if channel == 'broadcast' || channel == @redis_channel || data['recipients'].include?(@redis_token)
+      send_to_client msg
+    end
   end
 
   def socket_logger

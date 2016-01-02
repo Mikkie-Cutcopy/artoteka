@@ -8,16 +8,15 @@ class RoomsController < ApplicationController
   end
 
   def create
-    @room = RoomService.activate_room(params[:owner], params[:owner_email])
-    append_cookies(imaginarium_name: params[:owner],
-                   imaginarium_email: params[:owner_email]
-    )
     respond_to do |format|
-      format.js   {render 'rooms/show'}
+      format.js   {
+        @room = RoomService.activate_room(params[:owner], params[:owner_email])
+        append_cookies(imaginarium_name: params[:owner],
+                       imaginarium_email: params[:owner_email]
+        )
+        @redis_token = @room.owner.redis_token
+        render 'rooms/show'}
     end
-    #Imaginarium::MessageAdapter.send_to_client(JSON.generate(
-    #  authenticity_token: params[:authenticity_token])
-    #)
   end
 
   def show

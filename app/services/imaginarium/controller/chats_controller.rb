@@ -1,5 +1,5 @@
 module Imaginarium::Controller
-  class ChatsController < ApplicationController
+  class ChatsController < InitialController
 
   end
 end

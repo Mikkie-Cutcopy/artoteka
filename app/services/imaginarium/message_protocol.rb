@@ -5,7 +5,7 @@ module Imaginarium::MessageProtocol
 
   class Request
     def initialize(data)
-      @env = JSON.parse(data)
+      @env = data
     end
 
     def call

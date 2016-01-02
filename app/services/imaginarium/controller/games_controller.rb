@@ -1,4 +1,4 @@
 module Imaginarium::Controller
-  class GamesController < ApplicationController
+  class GamesController < InitialController
   end
 end

@@ -1,5 +1,5 @@
 module Imaginarium::Controller
-  class ApplicationController < BaseController
+  class InitialController < BaseController
     attr_accessor :current_gamer
 
     def identification

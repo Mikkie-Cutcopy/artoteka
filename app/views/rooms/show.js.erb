@@ -1,3 +1,10 @@
+connection = getCurrentConnection();
+var jsonRequestObject = {"entity": 'authentication',
+                         "command": 'create',
+                         "params":
+                            {"redis_token": "<%= @redis_token %>"}
+                        }
+connection.send_message(JSON.stringify(jsonRequestObject))
 history.pushState('', '', "rooms/" + "<%= @room.number %>")
 $('div.popup-container > div.popup-content').remove()
 $('div.popup-container').append("<%= j render 'rooms/show'%>")

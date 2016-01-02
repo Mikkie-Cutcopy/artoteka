@@ -7,7 +7,7 @@ class Room < ActiveRecord::Base
   validates  :number, uniqueness: true
 
   def owner
-    players.where(owner: true).first
+    gamers.where(owner: true).first
   end
 
 end
