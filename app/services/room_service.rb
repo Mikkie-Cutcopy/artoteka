@@ -4,12 +4,13 @@ module RoomService
   DIGIT_COUNT = 7
 
   def activate_room(owner, owner_email)
+    room_number = Room.generate_number
     ActiveRecord::Base.transaction do
       user = User.find_or_create_by(name: owner, email: owner_email)
-      room = Room.create(number: Imaginarium::MessageProtocol.generate_redis_token,  active: false)
-      gamer = room.gamers.create(user: user, room: room, redis_token: user.redis_token, owner: true)
-      Imaginarium::RedisModel::Room.new.bind_to!(room) << gamer
-      #Imaginarium::MessageAdapter.subscribe_to_channel(room.number.to_s)
+      room = Room.create!(number: room_number,  active: false)
+      gamer = user.gamers.create!(redis_token: user.redis_token, owner: true)
+      room.gamers << gamer
+      room.redis_object.set_gamers = [gamer.redis_object]
       room
     end
   end
@@ -18,8 +19,10 @@ module RoomService
     ActiveRecord::Base.transaction do
       user  = User.find_or_create_by(name: user_name, email: user_email)
       room  = Room.find(room_id)
-      gamer = Gamer.find_or_create_by(user: user, room: room, redis_token: user.redis_token)
-      #Imaginarium::MessageAdapter.subscribe_to_channel(room.number.to_s)
+      gamer = user.gamers.find_or_create_by(redis_token: user.redis_token)
+      room.gamers << gamer
+      room.redis_object.set_gamers = [gamer.redis_object]
+      #redis_room.action!(:refresh)
       gamer
     end
   end

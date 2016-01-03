@@ -63,6 +63,7 @@ module Imaginarium::RedisModel
       else
         list redis_model
         define_method("set_#{redis_model.to_s}=") do |redis_objects|
+          return if redis_objects.empty?
           dependent_method = self.class.name.demodulize.underscore
           redis_objects.each do |redis_object|
             return if send(redis_model).values.include?(redis_object.id)
@@ -94,6 +95,7 @@ module Imaginarium::RedisModel
       value redis_model
       # Gamer.new.set_room= redis_object
       define_method("set_#{redis_model.to_s}=") do |redis_object|
+        return unless redis_object
         dependent_method = underscored_class_name
         return unless redis_model.to_s.pluralize == redis_object.underscored_class_name.pluralize
         send("#{redis_model.to_s}=", redis_object.auth_token)

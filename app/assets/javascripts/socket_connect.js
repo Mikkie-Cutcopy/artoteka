@@ -1,20 +1,20 @@
 function socketConnect() {
     var socket = new WebSocket("ws://localhost:3000/connect");
     socket.onopen = function() {
-        console.log("onopen")
-        alert("Соединение установлено.");
+        //console.log("onopen")
+        //alert("Соединение установлено.");
     };
     socket.onclose = function(event) {
         if (event.wasClean) {
             alert('Соединение закрыто чисто');
         } else {
-            alert('Обрыв соединения'); // например, "убит" процесс сервера
+            //alert('Обрыв соединения'); // например, "убит" процесс сервера
         }
-        alert('Код: ' + event.code + ' причина: ' + event.reason);
+        //alert('Код: ' + event.code + ' причина: ' + event.reason);
     };
 
     socket.onmessage = function(event) {
-        alert("Получены данные " + event.data);
+        //alert("Получены данные " + event.data);
         var responseObject = JSON.parse(event.data) ;
         console.log(responseObject);
         if (responseObject.redirect == "true") {
