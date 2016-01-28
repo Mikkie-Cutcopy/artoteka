@@ -1,4 +1,9 @@
 module RedisModelAccess
+  extend ActiveSupport::Concern
+
+  included do
+    REDIS_MODEL_NAMESPACE = Imaginarium::RedisModel
+  end
 
   def bind_redis_object
     redis_model.new.bind_to!(self)
@@ -9,6 +14,6 @@ module RedisModelAccess
   end
 
   def redis_model
-    ('Imaginarium::RedisModel::' + self.class.name).constantize
+    [REDIS_MODEL_NAMESPACE, self.class].map(&:to_s).join('::').constantize
   end
 end

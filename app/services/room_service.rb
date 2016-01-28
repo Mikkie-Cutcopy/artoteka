@@ -1,8 +1,6 @@
 module RoomService
   module_function
 
-  DIGIT_COUNT = 7
-
   def activate_room(owner, owner_email)
     room_number = Room.generate_number
     ActiveRecord::Base.transaction do

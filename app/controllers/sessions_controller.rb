@@ -1,4 +1,5 @@
 class SessionsController < ApplicationController
+  layout 'rooms'
 
   def new
     @room_number = params[:room_number].to_i
