@@ -14,20 +14,34 @@
   @extend .soft_border;
 
   width: 1100px;
-  height: 550px;
+  height: 650px;
   margin: auto;
   padding-bottom: 20px;
   //padding-top: 30px;
 }
 
+
+.cards_field:before {
+  content: '';
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
+}
 .cards_field {
   height: 350px;
+  text-align: center;
+}
+
+.cards_container {
+  display: inline-block;
+  vertical-align: middle;
 }
 
 .card_picture {
-  width: 80%;
-  height: 90%;
-  margin: auto;
+  display: inline-block;
+  width: 200px;
+  height: 300px;
+  margin: 0px 5px 0px 5px;
 }
 
 table {

@@ -9,8 +9,7 @@ html
     = csrf_meta_tags
 
   body ng-controller='ActiveButtonCtrl'
-    .header
-      p.roboto_header
-        = t('app.name')
     .games-container
       = yield
+
+

@@ -28,11 +28,11 @@ gem 'sdoc', '~> 0.4.0',          group: :doc
 
 # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
 gem 'spring',        group: :development
-gem 'pg', '0.17.1', :platform => :jruby, :git => 'git://github.com/headius/jruby-pg.git', :branch => :master
-
+#gem 'pg', '0.17.1', :platform => :jruby, :git => 'git://github.com/headius/jruby-pg.git', :branch => :master
+gem 'pg'
 gem 'slim'
 
-gem 'puma'
+
 gem 'state_machine'
 gem 'sequence'
 gem 'tubesock'
@@ -50,6 +50,14 @@ gem 'rspec'
 gem 'rspec-rails'
 gem 'aspectory'
 gem 'abstraction'
+gem 'capistrano', '~> 3.1'
+gem 'capistrano-rbenv', '~> 2.0'
+gem 'capistrano-bundler', '~> 1.1.3'
+gem 'capistrano-rails', '~> 1.1.2'
+
+group :production do
+  gem 'unicorn', '~> 4.8.3'
+end
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
