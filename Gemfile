@@ -32,8 +32,6 @@ gem 'spring',        group: :development
 gem 'pg'
 gem 'slim'
 
-
-gem 'state_machine'
 gem 'sequence'
 gem 'tubesock'
 gem 'randexp'

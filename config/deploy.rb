@@ -56,21 +56,6 @@ set :rbenv_roles, :all # default value
 # Default value for keep_releases is 5
 # set :keep_releases, 5
 
-namespace :deploy do
-  after :finishing, 'application:stop'
-  after :finishing, 'application:start'
-  after :finishing, :cleanup
-  after :restart, :clear_cache do
-    on roles(:web), in: :groups, limit: 3, wait: 10 do
-      # Here we can do anything such as:
-      # within release_path do
-      #   execute :rake, 'cache:clear'
-      # end
-    end
-  end
-
-end
-
 namespace :setup do
   desc 'Загрузка конфигурационных файлов на удаленный сервер'
   task :upload_config do
@@ -82,7 +67,6 @@ namespace :setup do
     end
   end
 end
-
 
 namespace :nginx do
   desc 'Создание симлинка в /etc/nginx/conf.d на nginx.conf приложения'
@@ -106,20 +90,34 @@ namespace :nginx do
   after :append_config, :restart
 end
 
+namespace :deploy do
 
-
-namespace :application do
-  desc 'Запуск Unicorn'
-  task :start do
-    on roles(:app) do
-      execute "cd #{release_path} && ~/.rbenv/shims/bundle exec unicorn_rails -c #{fetch(:unicorn_config)} -E #{fetch(:rails_env)} -D"
+  namespace :application do
+    desc 'Запуск Unicorn'
+    task :start do
+      on roles(:app) do
+        execute "cd #{release_path} && bundle exec unicorn_rails -c #{fetch(:unicorn_config)} -E #{fetch(:rails_env)} -D"
+      end
+    end
+    desc 'Завершение Unicorn'
+    task :stop do
+      on roles(:app) do
+        execute "if [ -f #{fetch(:unicorn_pid)} ] && [ -e /proc/$(cat #{fetch(:unicorn_pid)}) ]; then kill -9 `cat #{fetch(:unicorn_pid)}`; fi"
+      end
     end
   end
-  desc 'Завершение Unicorn'
-  task :stop do
-    on roles(:app) do
-      execute "if [ -f #{fetch(:unicorn_pid)} ] && [ -e /proc/$(cat #{fetch(:unicorn_pid)}) ]; then kill -9 `cat #{fetch(:unicorn_pid)}`; fi"
+
+  after :finishing, 'application:stop'
+  after :finishing, 'application:start'
+  after :finishing, :cleanup
+  after :restart, :clear_cache do
+    on roles(:web), in: :groups, limit: 3, wait: 10 do
+      # Here we can do anything such as:
+      # within release_path do
+      #   execute :rake, 'cache:clear'
+      # end
     end
   end
 end
+
 
