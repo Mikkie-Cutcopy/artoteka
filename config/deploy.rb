@@ -66,6 +66,12 @@ namespace :setup do
       end
     end
   end
+
+  task :create_db do
+    on roles(:app) do
+      execute "cd #{release_path} && ~/.rbenv/shims/bundle exec rake db:create RAILS_ENV=production"
+    end
+  end
 end
 
 namespace :nginx do
