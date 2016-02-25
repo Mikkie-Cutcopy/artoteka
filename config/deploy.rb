@@ -2,7 +2,7 @@
 lock '3.4.0'
 
 set :repo_url, 'git@github.com:Mikkie-Cutcopy/artoteka.git'
-
+set :branch, 'markup'
 set :rails_env, 'production'
 
 # Имя пользователя
@@ -96,7 +96,7 @@ namespace :deploy do
     desc 'Запуск Unicorn'
     task :start do
       on roles(:app) do
-        execute "cd #{release_path} && bundle exec unicorn_rails -c #{fetch(:unicorn_config)} -E #{fetch(:rails_env)} -D"
+        execute "cd #{release_path} && ~/.rbenv/shims/bundle exec unicorn_rails -c #{fetch(:unicorn_config)} -E #{fetch(:rails_env)} -D"
       end
     end
     desc 'Завершение Unicorn'
