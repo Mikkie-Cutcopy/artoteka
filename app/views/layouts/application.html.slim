@@ -8,5 +8,10 @@ html
     = javascript_include_tag "application", 'data-turbolinks-track' => true
     = csrf_meta_tags
 
-
+  body ng-controller='ActiveButtonCtrl'
+    .header
+      p.roboto_header
+        = t('app.name')
+    .popup-container
+      = yield
 
