@@ -9,12 +9,16 @@ module Imaginarium::MessageProtocol
     end
 
     def call
-      controller.hundle(@env)
+      begin
+        controller.hundle(@env)
+      rescue NameError
+      end
     end
 
     private
 
     def controller
+
       routes_resolve(@env['entity'])
     end
 

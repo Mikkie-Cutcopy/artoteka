@@ -10,6 +10,8 @@ set :username, 'mikkie'
 # Имя приложения
 set :application, 'application'
 
+set :pty, true
+
 set :deploy_to, "/home/#{fetch(:username)}/#{fetch(:application)}"
 
 set :linked_files, %w{config/secrets.yml config/database.yml}
@@ -73,7 +75,7 @@ namespace :setup do
     end
   end
 end
-
+#/usr/bin/env sudo service nginx reload
 namespace :nginx do
   desc 'Создание симлинка в /etc/nginx/conf.d на nginx.conf приложения'
   task :append_config do
