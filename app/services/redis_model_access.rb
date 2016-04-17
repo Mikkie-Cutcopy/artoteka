@@ -2,7 +2,7 @@ module RedisModelAccess
   extend ActiveSupport::Concern
 
   included do
-    REDIS_MODEL_NAMESPACE = Imaginarium::RedisModel
+    REDIS_MODEL_NAMESPACE = Imaginarium::Model
   end
 
   def bind_redis_object

@@ -13,4 +13,8 @@ class SocketLogger < Logger
   def response(data)
     info("SOCKET RESPONSE: channel ##{redis_channel}, message: #{data}")
   end
+
+  def socket_info
+    info("SOCKET RESPONSE: channel ##{redis_channel}, message: #{data}")
+  end
 end

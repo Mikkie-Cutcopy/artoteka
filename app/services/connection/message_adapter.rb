@@ -2,15 +2,12 @@ require 'rubygems'
 require 'redis'
 require 'json'
 
-class Imaginarium::MessageAdapter
+class Connection::MessageAdapter
+  include RedisMethods
   attr_reader :socket, :redis_channel
   attr_accessor :redis_token
 
   MAIN_CHANNEL = 'broadcast'
-
-  def self.redis_instance
-    Redis.new(url: ENV["REDIS_URL"], driver: :hiredis)
-  end
 
   def start(socket)
     @socket = socket
@@ -32,7 +29,7 @@ class Imaginarium::MessageAdapter
   def hundle(msg)
     data = JSON.parse(msg)
     data.merge!('adapter' => self)
-    response = Imaginarium::MessageProtocol::Request.new(data).call
+    response = Connection::MessageProtocol::Request.new(data).call
     send_to_client(response.to_json)
   end
 
@@ -58,14 +55,6 @@ class Imaginarium::MessageAdapter
 
   def socket_logger
     @socket_logger ||= SocketLogger.new(MAIN_CHANNEL)
-  end
-
-  def redis_pub
-    @redis_pub ||= self.class.redis_instance
-  end
-
-  def redis_sub
-    @redis_sub ||= self.class.redis_instance
   end
 
 end

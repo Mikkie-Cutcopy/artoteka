@@ -3,10 +3,10 @@ div.popup-content.sign_up_popup
     div style='height: 10px'
     p.roboto33
       = t('room.new.name')
-    input.inpt name='owner' value="#{cookies.signed[:imaginarium_name] || ''}"
+    input.inpt name='owner[name]' value="#{cookies.signed[:imaginarium_owner_name] || ''}"
     p.roboto33
       = t('room.new.email')
-    input.inpt name='owner_email'  value="#{cookies.signed[:imaginarium_email] || ''}"
+    input.inpt name='owner[email]'  value="#{cookies.signed[:imaginarium_owner_email] || ''}"
     div style='height: 40px'
     input.btn.create_room2 id='new_room_connect' type='button'  value='Создать комнату'
     = button_to t('room.create'), rooms_path, class: 'hidden', id: 'new_room_submit'

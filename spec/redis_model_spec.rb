@@ -6,7 +6,7 @@ RSpec.describe Imaginarium::RedisModel do
     let (:room) {Imaginarium::RedisModel::Room.new}
     let (:gamer) {Imaginarium::RedisModel::Gamer.new}
     let (:gamer2) {Imaginarium::RedisModel::Gamer.new}
-    let (:game) {Imaginarium::RedisModel::Game.new}
+    let (:model) {Imaginarium::RedisModel::Game.new}
 
     it "check without values" do
       expect(room.get_gamers).to eq([])

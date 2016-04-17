@@ -1,3 +1,4 @@
+#DEPRECATED
 module Chain
 
   class ChainObject

@@ -1,12 +1,12 @@
 require 'redis'
 require 'json'
-require 'imaginarium/message_adapter'
+require 'connection/message_adapter'
 
 
 class ConnectionController < ApplicationController
   include Tubesock::Hijack
   def socket_listen
-      message_adapter = Imaginarium::MessageAdapter.new
+      message_adapter = Connection::MessageAdapter.new
       hijack do |tubesock|
         #on connect with server
         tubesock.onopen do

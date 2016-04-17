@@ -1,4 +1,4 @@
-module Imaginarium::MessageProtocol
+module Connection::MessageProtocol
   module_function
 
   CONTROLLERS_PATH = 'imaginarium/controller'

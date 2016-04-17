@@ -1,7 +1,7 @@
-module Imaginarium::RedisModel
-  class Room < Base
+module Imaginarium::Model
+  class Room < Imaginarium::RedisModel::Base
     has :gamers
-    has :game
+    has :model
     has :chat
     value :status
     value :room_number

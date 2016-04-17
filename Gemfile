@@ -27,9 +27,9 @@ gem 'jbuilder', '~> 2.0'
 gem 'sdoc', '~> 0.4.0',          group: :doc
 
 # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
-gem 'spring',        group: :development
+  
 #gem 'pg', '0.17.1', :platform => :jruby, :git => 'git://github.com/headius/jruby-pg.git', :branch => :master
-gem 'pg'
+
 gem 'slim'
 
 gem 'sequence'
@@ -40,7 +40,6 @@ gem 'redis-namespace'
 gem "default_value_for"
 gem 'redis-objects'
 gem 'hiredis'
-gem 'pry'
 gem 'useragent'
 gem 'rubocop'
 gem 'state_machine'
@@ -52,6 +51,13 @@ gem 'capistrano', '~> 3.1'
 gem 'capistrano-rbenv', '~> 2.0'
 gem 'capistrano-bundler', '~> 1.1.3'
 gem 'capistrano-rails', '~> 1.1.2'
+gem 'pg', '0.17.1', :platform => :jruby, :git => 'git://github.com/headius/jruby-pg.git', :branch => :master
+
+#rvm use jruby-9.0.0.0.pre1
+group :development do
+  gem 'puma'
+  gem 'spring'
+end
 
 group :production do
   gem 'unicorn', '~> 4.8.3'

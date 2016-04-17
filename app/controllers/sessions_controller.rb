@@ -11,7 +11,7 @@ class SessionsController < ApplicationController
   def create
     @room = Room.find_by_number(params[:room_number])
     if @room
-      gamer = RoomService.add_gamer(@room.id, params[:owner], params[:owner_email])
+      gamer = @room.add_player(owner: params[:owner], owner_email: params[:owner_email])
       @redis_token = gamer.redis_token
       respond_to do |format|
         format.js   {render 'rooms/show'}

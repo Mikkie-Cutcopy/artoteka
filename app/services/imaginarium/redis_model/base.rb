@@ -5,7 +5,7 @@ module Imaginarium::RedisModel
     value :attachment_id
 
     def id
-      @auth_token ||= Imaginarium::MessageProtocol.generate_redis_token
+      @auth_token ||= Connection::MessageProtocol.generate_redis_token
     end
 
     def attached?
@@ -24,7 +24,7 @@ module Imaginarium::RedisModel
     def initialize(attr={})
       #TODO replace with connection pool
       @auth_token = attr[:token] if attr[:token]
-      Redis::Objects.redis = Imaginarium::MessageAdapter.redis_instance
+      Redis::Objects.redis = Connection::MessageAdapter.redis_instance
     end
 
     # bind to ActiveRecord object

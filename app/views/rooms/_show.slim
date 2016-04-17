@@ -3,10 +3,10 @@ div.popup-content
     p.roboto33
       = @room.number
   div.space20
-  - @room.gamers.each do |gamer|
+  - @room.players.each do |player|
     div.space20
     div.list_item
       p.roboto18
-        = gamer.user.name
+        = player.user.name
   .bottom
     = button_to 'Старт!', room_game_path(room_number: @room.number), method: :get, class: 'btn create_room2'

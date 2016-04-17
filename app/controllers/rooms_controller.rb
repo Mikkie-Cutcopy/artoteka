@@ -11,10 +11,8 @@ class RoomsController < ApplicationController
   def create
     respond_to do |format|
       format.js   {
-        @room = RoomService.activate_room(params[:owner], params[:owner_email])
-        append_cookies(imaginarium_name: params[:owner],
-                       imaginarium_email: params[:owner_email]
-        )
+        @room = Room.registration(owner_params)
+        append_cookies(cookie_attributes)
         @redis_token = @room.owner.redis_token
         render 'rooms/show'}
     end
@@ -30,8 +28,13 @@ class RoomsController < ApplicationController
 
   private
 
-  def room_params
-    params.require(:room).permit(:owner, :owner_email, :number)
+  def owner_params
+    params.require(:owner).permit(:name, :email)
+  end
+
+  def cookie_attributes
+    {imaginarium_owner_name: params[:owner][:name],
+     imaginarium_owner_email: params[:owner][:email]}
   end
 
 end

@@ -1,5 +1,5 @@
 # bundle exec puma -t 5:5 -p ${PORT:-3000} -e ${RACK_ENV:-development}
-workers Integer(ENV['WEB_CONCURRENCY'] || 2)
+#workers Integer(ENV['WEB_CONCURRENCY'] || 1)
 threads_count = Integer(ENV['MAX_THREADS'] || 5)
 threads threads_count, threads_count
 
